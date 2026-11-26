@@ -1,0 +1,895 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Kuis Substansi Genetik</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Konsep tata letak: satu lajur gel elektroforesis (50 pita kecil = 50 soal), satu kartu soal di tengah,
+   pembahasan terbuka tepat di bawah tiap opsi setelah dijawab. Bar nama dan kelas menempel di atas. */
+:root {
+  --bg: #edf2f3;
+  --surface: #ffffff;
+  --surface-2: #f4f8f9;
+  --fg: #12242c;
+  --muted: #536870;
+  --line: #d0dce0;
+  --accent: #0a7f7a;
+  --accent-ink: #ffffff;
+  --accent-soft: #d9f0ee;
+  --good: #1a7a3c;
+  --good-bg: #e1f3e6;
+  --bad: #b3261b;
+  --bad-bg: #fbe6e3;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c161a;
+    --surface: #132127;
+    --surface-2: #192a31;
+    --fg: #e4edf0;
+    --muted: #97acb5;
+    --line: #28393f;
+    --accent: #46cfc4;
+    --accent-ink: #04201d;
+    --accent-soft: #123a3e;
+    --good: #72dc92;
+    --good-bg: #123120;
+    --bad: #ff9f96;
+    --bad-bg: #391b19;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c161a;
+  --surface: #132127;
+  --surface-2: #192a31;
+  --fg: #e4edf0;
+  --muted: #97acb5;
+  --line: #28393f;
+  --accent: #46cfc4;
+  --accent-ink: #04201d;
+  --accent-soft: #123a3e;
+  --good: #72dc92;
+  --good-bg: #123120;
+  --bad: #ff9f96;
+  --bad-bg: #391b19;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 30;
+  background: var(--surface);
+}
+.wrap {
+  max-width: 800px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+main.wrap { padding-block: 20px 56px; }
+
+/* Bar nama dan kelas */
+.bar {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.bar-in {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 22px;
+  padding-block: 10px;
+}
+.brand { display: flex; flex-direction: column; flex: 1 1 150px; min-width: 0; }
+.brand-name { font-weight: 600; font-size: 1.05rem; line-height: 1.2; }
+.brand-sub { font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.kv { display: flex; flex-direction: column; min-width: 0; }
+.kv small { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.kv b { font-weight: 600; overflow-wrap: anywhere; max-width: 22ch; }
+.kv b.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) {
+  .brand { flex-basis: 100%; flex-direction: row; align-items: baseline; gap: 10px; }
+  .kv { flex: 1 1 auto; }
+  .kv b { max-width: 16ch; }
+}
+
+/* Teks dasar */
+h1 { font-size: clamp(1.7rem, 5vw, 2.3rem); line-height: 1.15; margin: 0 0 10px; letter-spacing: -.01em; text-wrap: balance; }
+h2 { font-size: 1.15rem; line-height: 1.4; margin: 0; text-wrap: balance; }
+h3 { font-size: 1rem; margin: 0 0 8px; }
+p { margin: 0 0 12px; }
+.lead { color: var(--muted); max-width: 62ch; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 20px; }
+.stack { display: flex; flex-direction: column; gap: 16px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+/* Formulir */
+.fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0 8px; }
+@media (max-width: 560px) { .fields { grid-template-columns: 1fr; } }
+label { display: flex; flex-direction: column; gap: 6px; font-weight: 500; font-size: .95rem; min-width: 0; }
+input[type="text"], input[type="search"], select {
+  font: inherit;
+  color: var(--fg);
+  background: var(--surface-2);
+  border: 1.5px solid var(--line);
+  border-radius: 6px;
+  padding: 10px 12px;
+  min-height: 44px;
+  width: 100%;
+  min-width: 0;
+}
+input:focus-visible, select:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.err { color: var(--bad); min-height: 1.4em; margin: 4px 0 0; font-size: .92rem; }
+
+/* Tombol */
+.btn {
+  font: inherit;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 6px;
+  border: 1.5px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  cursor: pointer;
+}
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn.alt { background: transparent; color: var(--accent); }
+.btn.sm { min-height: 36px; padding: 0 12px; font-size: .9rem; }
+.link {
+  font: inherit;
+  background: none;
+  border: 0;
+  padding: 6px 0;
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+ul.rules { margin: 14px 0 0; padding-left: 1.2em; color: var(--muted); }
+ul.rules li { margin-bottom: 4px; }
+.note { font-size: .92rem; color: var(--muted); margin: 14px 0 0; }
+.resume { border: 1.5px solid var(--accent); background: var(--accent-soft); border-radius: 8px; padding: 14px 16px; margin-top: 18px; }
+.resume p { margin-bottom: 10px; }
+
+/* Lajur gel: kemajuan */
+.lane { display: grid; grid-template-columns: repeat(25, 1fr); gap: 3px; margin-bottom: 14px; }
+.lane i { display: block; height: 10px; border-radius: 2px; background: var(--line); }
+.lane i.ok { background: var(--good); }
+.lane i.no { background: var(--bad); }
+.lane i.on { background: var(--accent); }
+@media (max-width: 560px) { .lane { grid-template-columns: repeat(10, 1fr); } }
+
+/* Kartu soal */
+.q { display: flex; flex-direction: column; gap: 16px; }
+.meta { font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0; }
+.scen { background: var(--surface-2); border-radius: 6px; padding: 14px 16px; }
+.scen .tag { display: inline-block; font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+.scen p { margin: 0; overflow-wrap: anywhere; }
+#qask { font-weight: 600; outline: none; }
+
+.opts { display: flex; flex-direction: column; gap: 10px; }
+.opt-wrap { display: flex; flex-direction: column; gap: 0; min-width: 0; }
+.opt {
+  font: inherit;
+  color: var(--fg);
+  text-align: left;
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 12px;
+  align-items: start;
+  width: 100%;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 14px;
+  cursor: pointer;
+}
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt:disabled { cursor: default; }
+.opt .ltr {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  border: 1.5px solid var(--line);
+  background: var(--surface-2);
+}
+.opt .txt { overflow-wrap: anywhere; padding-top: 2px; }
+.opt.sel { border-color: var(--accent); background: var(--accent-soft); }
+.opt.sel .ltr { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
+.opt.good { border-color: var(--good); background: var(--good-bg); }
+.opt.good .ltr { background: var(--good); border-color: var(--good); color: var(--surface); }
+.opt.bad { border-color: var(--bad); background: var(--bad-bg); }
+.opt.bad .ltr { background: var(--bad); border-color: var(--bad); color: var(--surface); }
+
+.why { margin: 6px 4px 4px 42px; font-size: .94rem; color: var(--fg); overflow-wrap: anywhere; }
+.chip {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-right: 8px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+.chip.good { color: var(--good); border-color: var(--good); background: var(--good-bg); }
+.chip.bad { color: var(--bad); border-color: var(--bad); background: var(--bad-bg); }
+
+.verdict { border-radius: 6px; padding: 12px 14px; font-weight: 600; }
+.verdict.good { background: var(--good-bg); color: var(--good); }
+.verdict.bad { background: var(--bad-bg); color: var(--bad); }
+.verdict.none { background: var(--surface-2); color: var(--muted); }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.endrow { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+.endrow .confirm { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; font-size: .95rem; }
+
+/* Hasil */
+.score { font-family: var(--font-mono); font-weight: 600; font-size: clamp(3.2rem, 14vw, 5.4rem); line-height: 1; font-variant-numeric: tabular-nums; margin: 6px 0; }
+.score small { font-size: .3em; color: var(--muted); font-weight: 400; }
+.status { border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; background: var(--surface-2); }
+.status.ok { border-color: var(--good); background: var(--good-bg); color: var(--good); }
+.status.fail { border-color: var(--bad); background: var(--bad-bg); color: var(--bad); }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: .94rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 500; white-space: nowrap; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+td.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.pillrow { display: flex; flex-wrap: wrap; gap: 8px; }
+.qpill { font: inherit; font-family: var(--font-mono); font-size: .9rem; border: 1.5px solid var(--bad); background: var(--bad-bg); color: var(--bad); border-radius: 6px; padding: 4px 10px; cursor: pointer; min-height: 36px; }
+.qpill.n { border-color: var(--line); background: var(--surface-2); color: var(--muted); }
+
+/* Rekap */
+.filters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+@media (max-width: 560px) { .filters { grid-template-columns: 1fr; } }
+.stats { display: flex; flex-wrap: wrap; gap: 8px 28px; }
+.stats div { display: flex; flex-direction: column; }
+.stats small { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.stats b { font-family: var(--font-mono); font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+.hard { margin: 0; padding-left: 1.2em; }
+.hard li { margin-bottom: 4px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+</style>
+
+<header class="bar">
+  <div class="wrap bar-in">
+    <div class="brand"><span class="brand-name">Kuis Genetik</span><span class="brand-sub">HOTS · 50 soal</span></div>
+    <div class="kv"><small>Nama</small><b id="bNama">—</b></div>
+    <div class="kv"><small>Kelas</small><b id="bKelas">—</b></div>
+    <div class="kv" id="bSoalBox" hidden><small>Soal</small><b class="mono" id="bSoal">0/50</b></div>
+    <div class="kv" id="bSkorBox" hidden><small>Skor</small><b class="mono" id="bSkor">0</b></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- Awal -->
+  <section id="v-start" class="stack">
+    <div class="card">
+      <div class="row" style="justify-content: space-between; align-items: flex-start;">
+        <p class="eyebrow">Substansi Genetik</p>
+        <button class="btn alt sm" id="btnRekap" type="button" hidden>Rekap nilai</button>
+      </div>
+      <h1>Kuis studi kasus HOTS</h1>
+      <p class="lead">Lima puluh skenario singkat tentang struktur DNA dan RNA, replikasi, sintesis protein, mutasi, regulasi gen, dan rekayasa genetika. Setiap soal menuntut analisis, bukan hafalan.</p>
+      <ul class="rules">
+        <li>Satu soal per layar, lima pilihan jawaban.</li>
+        <li>Setelah menjawab, kamu melihat alasan jawaban yang tepat dan mengapa tiap pilihan lain kurang tepat.</li>
+        <li>Nilai = jumlah jawaban benar × 2 (maksimum 100), dikirim otomatis ke rekap guru saat kuis dikumpulkan.</li>
+      </ul>
+
+      <div id="resumeBox" class="resume" hidden>
+        <p id="resumeText"></p>
+        <div class="row">
+          <button class="btn" id="btnResume" type="button">Lanjutkan</button>
+          <button class="btn alt" id="btnFresh" type="button">Mulai baru</button>
+        </div>
+      </div>
+
+      <form id="startForm" autocomplete="off" novalidate>
+        <div class="fields">
+          <label for="inNama">Nama lengkap
+            <input type="text" id="inNama" name="nama" maxlength="60" placeholder="Contoh: Sari Wulandari" autocomplete="name">
+          </label>
+          <label for="inKelas">Kelas
+            <input type="text" id="inKelas" name="kelas" maxlength="20" placeholder="Contoh: XII IPA 2">
+          </label>
+        </div>
+        <p class="err" id="startErr" role="alert"></p>
+        <div class="row"><button class="btn" id="btnStart" type="submit">Mulai kuis</button></div>
+      </form>
+      <p class="note" id="dbStatus">Memeriksa pengumpulan nilai…</p>
+    </div>
+  </section>
+
+  <!-- Soal -->
+  <section id="v-quiz" hidden>
+    <div class="lane" id="lane" role="img" aria-label="Kemajuan kuis"></div>
+    <article class="card q">
+      <p class="meta" id="qmeta"></p>
+      <div class="scen"><span class="tag">Skenario</span><p id="qscen"></p></div>
+      <h2 id="qask" tabindex="-1"></h2>
+      <div class="opts" id="opts"></div>
+      <div class="verdict" id="verdict" hidden></div>
+      <div class="actions">
+        <button class="btn" id="btnCheck" type="button" disabled>Jawab</button>
+        <button class="btn" id="btnNext" type="button" hidden>Soal berikutnya</button>
+        <button class="btn alt" id="btnBack" type="button" hidden>Kembali ke hasil</button>
+      </div>
+    </article>
+    <div class="endrow" id="endRow">
+      <button class="link" id="btnEnd" type="button">Akhiri dan kumpulkan sekarang</button>
+      <span class="confirm" id="endConfirm" hidden>
+        <span id="endText"></span>
+        <button class="btn sm" id="btnEndYes" type="button">Ya, kumpulkan</button>
+        <button class="btn alt sm" id="btnEndNo" type="button">Lanjut mengerjakan</button>
+      </span>
+    </div>
+  </section>
+
+  <!-- Hasil -->
+  <section id="v-result" class="stack" hidden>
+    <div class="card">
+      <p class="eyebrow">Hasil kuis</p>
+      <div class="score"><span id="rNilai">0</span><small> / 100</small></div>
+      <p id="rRingkas" class="lead"></p>
+      <div class="status" id="rStatus" role="status"></div>
+      <div class="row" style="margin-top: 14px;">
+        <button class="btn alt sm" id="btnRetry" type="button" hidden>Kirim ulang nilai</button>
+        <button class="btn alt sm" id="btnSelfCsv" type="button" hidden>Unduh hasil (CSV)</button>
+        <button class="btn sm" id="btnAgain" type="button">Ulangi kuis</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Hasil per topik</h3>
+      <div class="scroll"><table>
+        <thead><tr><th>Topik</th><th class="num">Benar</th><th class="num">Soal</th></tr></thead>
+        <tbody id="rTopik"></tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <h3>Tinjau pembahasan</h3>
+      <p class="muted" id="rTinjauNote"></p>
+      <div class="pillrow" id="rTinjau"></div>
+    </div>
+  </section>
+
+  <!-- Rekap pembuat soal -->
+  <section id="v-rekap" class="stack" hidden>
+    <div class="card stack">
+      <div class="row" style="justify-content: space-between;">
+        <div>
+          <p class="eyebrow">Pembuat soal</p>
+          <h2>Rekap nilai siswa</h2>
+        </div>
+        <button class="btn alt sm" id="btnRekapBack" type="button">Kembali</button>
+      </div>
+      <p class="muted" id="rkMsg"></p>
+      <div class="filters">
+        <label for="rkKelas">Kelas
+          <select id="rkKelas"><option value="">Semua kelas</option></select>
+        </label>
+        <label for="rkCari">Cari nama
+          <input type="search" id="rkCari" placeholder="Ketik nama">
+        </label>
+        <label for="rkUrut">Urutkan
+          <select id="rkUrut">
+            <option value="nama">Nama A–Z</option>
+            <option value="nilai">Nilai tertinggi</option>
+            <option value="waktu">Terbaru</option>
+          </select>
+        </label>
+      </div>
+      <div class="stats" id="rkStats"></div>
+      <div class="row">
+        <button class="btn sm" id="btnCsv" type="button">Unduh CSV (Excel / Sheets)</button>
+        <button class="btn alt sm" id="btnCopy" type="button">Salin tabel</button>
+        <span class="muted" id="rkAct" role="status"></span>
+      </div>
+      <div class="scroll"><table>
+        <thead><tr><th class="num">No</th><th>Nama</th><th>Kelas</th><th class="num">Nilai</th><th class="num">Benar</th><th class="num">Percobaan</th><th>Dikumpulkan</th><th></th></tr></thead>
+        <tbody id="rkBody"></tbody>
+      </table></div>
+    </div>
+    <div class="card" id="rkHardBox" hidden>
+      <h3>Soal paling sulit</h3>
+      <ol class="hard" id="rkHard"></ol>
+    </div>
+  </section>
+
+</main>
+
+<script id="bank" type="application/json">[{"t":"Struktur DNA","s":"Tim peneliti mengisolasi DNA untai ganda dari bakteri yang hidup di mata air panas (±80 °C). Hasil analisis menunjukkan kandungan adenin 18%. Tim ingin memprediksi komposisi basa lainnya dan hubungannya dengan ketahanan DNA terhadap panas.","q":"Prediksi manakah yang paling tepat?","o":["Guanin 18% karena jumlah purin harus sama; ikatan hidrogen antar-basa sedikit sehingga DNA mudah terpisah","Timin 18%, guanin dan sitosin masing-masing 32% (G+C = 64%); banyaknya pasangan G≡C dengan tiga ikatan hidrogen membuat DNA tahan suhu tinggi","Urasil 18% menggantikan timin, sedangkan guanin dan sitosin masing-masing 32%; DNA tahan panas karena ikatan kovalen antar-basa","Timin 18%, guanin dan sitosin masing-masing 32%; suhu tinggi tidak berpengaruh pada pasangan basa karena ikatan hidrogen tidak bergantung suhu","Timin 18%, guanin 41%, dan sitosin 23% sehingga jumlah purin tetap melebihi pirimidin"],"a":1,"x":["Aturan Chargaff menyatakan A = T dan G = C, bukan A = G. Selain itu, pasangan G–C justru memiliki tiga ikatan hidrogen sehingga DNA lebih stabil, bukan lebih mudah terpisah.","A = T = 18% sehingga G + C = 64%, dan G = C = 32%. Pasangan G≡C punya tiga ikatan hidrogen (A=T hanya dua), sehingga DNA kaya G+C memerlukan suhu lebih tinggi untuk terdenaturasi, cocok untuk bakteri termofil.","DNA tidak mengandung urasil (itu basa RNA); DNA memakai timin. Ikatan antar-basa juga ikatan hidrogen, bukan kovalen; ikatan kovalen terdapat pada tulang punggung gula-fosfat.","Komposisi basanya sudah benar, tetapi kesimpulannya keliru: ikatan hidrogen bersifat lemah dan putus pada suhu tinggi (denaturasi). Justru jumlah ikatan hidrogen yang menentukan seberapa tinggi suhu yang dibutuhkan.","Menurut Chargaff, G harus sama dengan C (bukan 41% dan 23%). Jika A = T = 18%, sisanya 64% terbagi sama rata menjadi G dan C."]},{"t":"Struktur DNA","s":"Seorang teknisi laboratorium forensik akan merancang primer untuk mengamplifikasi sebuah segmen. Salah satu untai templat DNA bersekuens 5'-ATGCGTTA-3'. Primer harus menempel (anil) tepat pada templat tersebut.","q":"Sekuens primer manakah yang dapat menempel pada templat itu?","o":["5'-TACGCAAT-3'","5'-ATGCGTTA-3'","5'-UAACGCAU-3'","5'-TAACGCAT-3'","3'-TAACGCAT-5'"],"a":3,"x":["Urutan basanya komplementer (T–A, A–T, C–G, ...) tetapi ditulis 3'→5' lalu diberi label 5'→3'. Untai komplementer bersifat antiparalel, sehingga urutannya harus dibalik saat dibaca 5'→3'.","Ini sama dengan templat, bukan komplemennya, sehingga tidak dapat berpasangan dengan templat.","Mengandung urasil (basa RNA). Primer untuk PCR adalah DNA sehingga memakai timin.","Komplemen templat adalah 3'-TACGCAAT-5'. Karena untai bersifat antiparalel dan sekuens ditulis dari 5' ke 3', primer menjadi 5'-TAACGCAT-3'.","Susunannya paralel, bukan antiparalel: jika disejajarkan dengan templat, sebagian basa tidak berpasangan (misalnya G dengan A)."]},{"t":"Bukti Materi Genetik","s":"Dalam percobaan yang meniru Avery, ekstrak bakteri Streptococcus pneumoniae strain S (berkapsul, mematikan) yang telah dimatikan dengan panas dibagi menjadi tiga bagian. Masing-masing diberi protease, RNase, atau DNase, lalu dicampur dengan bakteri strain R (tanpa kapsul, tidak mematikan) hidup dan disuntikkan ke tikus.","q":"Hasil dan kesimpulan manakah yang paling tepat?","o":["Tikus mati pada ketiga perlakuan, sehingga protein, RNA, dan DNA sama-sama berperan sebagai zat transformasi","Tikus hanya mati pada perlakuan DNase, sehingga protein adalah bahan genetik","Tikus mati pada perlakuan protease dan RNase, tetapi hidup pada perlakuan DNase, sehingga DNA adalah zat transformasi","Tikus hidup pada perlakuan protease dan mati pada perlakuan lain, sehingga protein adalah bahan genetik","Tikus hidup pada ketiga perlakuan karena bakteri S sudah mati oleh panas sehingga tidak dapat menularkan sifat"],"a":2,"x":["Jika ketiganya berperan, merusak salah satunya tidak akan mengubah hasil. Percobaan justru menunjukkan hanya perusakan DNA yang menghilangkan transformasi.","Terbalik. Tanpa DNase (DNA masih utuh), bakteri R mengalami transformasi menjadi S dan tikus mati; DNase merusak DNA sehingga tikus bertahan hidup.","Protease dan RNase tidak merusak DNA, sehingga transformasi tetap terjadi dan tikus mati. DNase menghancurkan DNA, transformasi gagal, tikus hidup. Hasil ini membuktikan DNA pembawa sifat genetik.","Perusakan protein (protease) tidak menghentikan transformasi, sehingga tikus tetap mati. Jika protein bahan genetik, justru protease yang akan mencegah transformasi.","Bakteri S yang dimatikan memang tidak menginfeksi, tetapi DNA-nya masih utuh dan dapat mengubah bakteri R hidup menjadi S (transformasi), sebagaimana ditunjukkan Griffith dan Avery."]},{"t":"Bukti Materi Genetik","s":"Dalam percobaan Hershey–Chase, fag T2 diberi label radioaktif: protein dengan ³⁵S dan DNA dengan ³²P. Fag dibiarkan menginfeksi Escherichia coli, campuran dikocok kuat dalam blender, lalu disentrifugasi sehingga sel bakteri mengendap (pelet) dan sisa selubung fag tetap di supernatan. Seorang siswa menyarankan langkah pengocokan dilewati agar lebih cepat.","q":"Apa dampak melewatkan pengocokan terhadap hasil dan kesimpulan?","o":["Hasil sama saja karena DNA dan protein sama-sama masuk ke dalam sel bakteri","³²P akan berpindah ke supernatan sehingga DNA tampak bukan bahan genetik","Fag tidak dapat menginfeksi tanpa pengocokan sehingga tidak ada radioaktivitas yang terdeteksi","³⁵S tidak akan terdeteksi sama sekali sehingga disimpulkan hanya DNA yang ada pada fag","³⁵S ikut mengendap bersama sel karena selubung protein masih menempel, sehingga protein dan DNA tidak dapat dibedakan sebagai pembawa informasi genetik"],"a":4,"x":["Hanya DNA yang masuk ke sel; protein tetap di luar sebagai selubung. Pengocokan diperlukan justru untuk melepas selubung dari permukaan sel sehingga perbedaan itu terlihat.","³²P berada di dalam DNA yang telah masuk ke sel, sehingga ia ada di pelet. Tanpa pengocokan pun ³²P tidak berpindah ke supernatan.","Infeksi terjadi saat fag menempel dan menyuntikkan DNA, tidak bergantung pada pengocokan. Pengocokan dilakukan setelah infeksi, hanya untuk melepaskan selubung.","³⁵S tetap ada, hanya posisinya yang berubah: ia menempel di permukaan sel. Masalahnya bukan pada keberadaan label.","Tanpa pengocokan, selubung fag (³⁵S) tetap menempel pada dinding sel dan ikut ke pelet bersama ³²P. Akibatnya tidak dapat disimpulkan bahan mana yang masuk sel dan bertindak sebagai bahan genetik."]},{"t":"Replikasi DNA","s":"Bakteri E. coli ditumbuhkan beberapa generasi dalam medium bernitrogen berat (¹⁵N), lalu dipindahkan ke medium bernitrogen ringan (¹⁴N). DNA dari tiap generasi dipisahkan dengan sentrifugasi gradien kerapatan: berat (¹⁵N/¹⁵N), hibrid (¹⁵N/¹⁴N), dan ringan (¹⁴N/¹⁴N). Replikasi bersifat semikonservatif.","q":"Berapa proporsi molekul DNA setelah tiga generasi di medium ¹⁴N?","o":["50% hibrid dan 50% ringan","25% hibrid dan 75% ringan, tidak ada DNA berat","12,5% hibrid dan 87,5% ringan","100% hibrid","25% berat, 25% hibrid, dan 50% ringan"],"a":1,"x":["Ini hasil setelah dua generasi (dari 4 molekul: 2 hibrid, 2 ringan), bukan tiga.","Setelah 3 generasi terdapat 8 molekul. Dua untai ¹⁵N asli tetap tersebar pada 2 molekul hibrid; 6 molekul lainnya seluruhnya ¹⁴N. Jadi 2/8 = 25% hibrid dan 75% ringan.","12,5% hibrid baru dicapai setelah empat generasi (2 hibrid dari 16 molekul).","100% hibrid hanya terjadi pada generasi pertama, saat setiap molekul baru memuat satu untai lama (¹⁵N) dan satu untai baru (¹⁴N).","DNA berat tidak terbentuk lagi karena tidak ada ¹⁵N baru di medium. Dua untai ¹⁵N asli selalu berpasangan dengan untai ¹⁴N baru pada replikasi semikonservatif."]},{"t":"Replikasi DNA","s":"Seorang peneliti mempelajari mutan E. coli yang peka suhu: pada 42 °C (suhu restriktif) DNA ligase mutan tidak aktif, sedangkan enzim replikasi lain normal. Sel mutan dipindah ke 42 °C saat replikasi sedang berlangsung.","q":"Apa yang paling mungkin ditemukan pada DNA yang baru disintesis?","o":["Untai leading menumpuk dalam potongan pendek karena tidak dapat disintesis kontinu","Untai DNA induk tidak terbuka karena garpu replikasi tidak terbentuk","Fragmen-fragmen pendek (fragmen Okazaki) pada untai lagging menumpuk karena tidak dapat disambung","Primer RNA tidak terbentuk sehingga tidak ada fragmen sama sekali","Replikasi berhenti total sehingga tidak ada DNA baru yang terbentuk"],"a":2,"x":["Untai leading disintesis kontinu mengikuti pembukaan garpu sehingga relatif tidak terpengaruh. Potongan pendek khas untai lagging.","Pembukaan heliks dilakukan helikase, yang normal pada mutan. Ligase bekerja sesudah sintesis, bukan pada pembukaan untai.","Untai lagging disintesis diskontinu sebagai fragmen Okazaki; DNA ligase menyambung celah antar-fragmen setelah primer diganti DNA. Tanpa ligase, fragmen tetap terpisah.","Primer dibuat oleh primase yang normal pada mutan; fragmen tetap terbentuk. Masalahnya hanya pada penyambungannya.","Sintesis DNA oleh DNA polimerase tetap berjalan; hanya penyambungan fragmen yang gagal, sehingga DNA baru tetap terbentuk, tetapi tidak utuh."]},{"t":"Replikasi DNA","s":"Sebuah mutasi menonaktifkan primase pada sel bakteri, sedangkan helikase dan DNA polimerase III normal. Sel mulai mereplikasi kromosomnya dari titik awal replikasi (ori).","q":"Apa konsekuensi yang paling tepat?","o":["Hanya untai lagging yang terganggu karena untai leading tidak memerlukan primer","DNA polimerase dapat memulai sintesis tanpa primer, tetapi dari ujung 5' sehingga produknya tidak lengkap","Helikase tidak dapat membuka heliks sehingga primase menjadi tidak diperlukan","DNA polimerase tidak dapat memulai sintesis karena memerlukan gugus 3'-OH bebas dari primer, sehingga untai baru tidak terbentuk pada kedua untai","Ligase menggantikan primase untuk menyediakan ujung 3'-OH sehingga replikasi tetap berjalan normal"],"a":3,"x":["Untai leading tetap memerlukan sedikitnya satu primer di ori untuk memulai sintesis; untai lagging memerlukan primer berulang. Tanpa primase, keduanya gagal.","DNA polimerase hanya dapat menambah nukleotida pada gugus 3'-OH yang sudah ada dan tidak pernah memulai dari nol; sintesis selalu berarah 5'→3'.","Helikase normal pada mutan dan tetap membuka heliks. Primase tetap dibutuhkan karena DNA polimerase tidak dapat memulai sintesis sendiri.","DNA polimerase hanya memperpanjang gugus 3'-OH yang sudah ada. Primase menyediakannya berupa primer RNA; tanpa itu, sintesis tidak dapat dimulai pada untai leading maupun lagging.","Ligase hanya menyambung ujung 3'-OH dan 5'-fosfat yang sudah bersebelahan; ligase tidak dapat memulai sintesis atau menggantikan primer."]},{"t":"Replikasi DNA","s":"Satu sel manusia memiliki sekitar 3,2 miliar pasang basa (anggap satu salinan genom). Satu garpu replikasi pada eukariota bergerak ±50 nukleotida per detik, dan fase S berlangsung sekitar 8 jam (±28.800 detik). Seorang siswa menghitung bahwa jika replikasi dimulai dari satu titik ori dengan dua garpu yang bergerak berlawanan arah, replikasi genom itu memerlukan lebih dari setahun.","q":"Bagaimana sel manusia dapat menyelesaikan replikasi dalam fase S?","o":["DNA polimerase eukariota bekerja ratusan kali lebih cepat daripada yang diperkirakan","Replikasi dimulai serentak dari ribuan titik ori pada seluruh kromosom, sehingga banyak garpu bekerja paralel","Hanya sebagian kecil genom yang direplikasi pada tiap siklus sel","Setiap kromosom hanya direplikasi dari satu ori tetapi dengan empat garpu","Replikasi berlangsung sepanjang siklus sel, termasuk pada fase G1 dan M"],"a":1,"x":["Kecepatan garpu eukariota memang lebih lambat daripada bakteri (±50 vs ±1000 nt/detik). Percepatan ratusan kali tidak terjadi; solusinya ada pada jumlah garpu.","Perhitungan: 3,2×10⁹ ÷ (2 garpu × 50 nt/detik) ≈ 3,2×10⁷ detik (±1 tahun). Agar selesai dalam ±28.800 detik diperlukan seribu atau lebih ori aktif; nyatanya ada puluhan ribu ori.","Seluruh genom harus direplikasi tepat satu kali per siklus sel agar sel anak menerima genom lengkap; replikasi parsial menyebabkan kehilangan informasi.","Empat garpu per kromosom hanya memberi percepatan sekitar dua kali lipat, jauh dari cukup. Dibutuhkan ribuan garpu.","Replikasi DNA dibatasi pada fase S. Replikasi di fase lain tidak terjadi; jika terjadi, DNA dapat tereplikasi lebih dari satu kali."]},{"t":"Struktur RNA","s":"Seorang peneliti menganalisis asam nukleat dari virus baru dan menemukan komposisi basa: adenin 23%, guanin 27%, urasil 30%, dan sitosin 20%. Sampel peka terhadap RNase, tetapi tidak terhadap DNase.","q":"Kesimpulan manakah yang paling tepat tentang genom virus ini?","o":["DNA untai ganda, sebab komposisi basanya mengikuti aturan Chargaff","RNA untai ganda, sebab A = U dan G = C","DNA untai tunggal, sebab jumlah A tidak sama dengan T","RNA untai tunggal, sebab mengandung urasil dan jumlah A tidak sama dengan U serta G tidak sama dengan C","Tidak dapat ditentukan, karena persentase basa tidak berjumlah 100%"],"a":3,"x":["Ada urasil dan tidak ada timin, serta A ≠ T dan G ≠ C, sehingga ini bukan DNA untai ganda. Kepekaan terhadap RNase juga menunjukkan RNA.","Pada RNA untai ganda, A harus sama dengan U dan G dengan C (23% ≠ 30%, 27% ≠ 20%). Data menunjukkan ketidaksamaan.","Urasil hanya ada pada RNA; DNA memakai timin. Sampel juga peka RNase, bukan DNase.","Urasil dan kepekaan terhadap RNase menunjukkan RNA. Karena A ≠ U dan G ≠ C, tidak ada pasangan basa yang saling melengkapi sehingga RNA berupa untai tunggal.","Jumlahnya 23 + 27 + 30 + 20 = 100%, sehingga datanya lengkap dan dapat ditafsirkan."]},{"t":"Kromatin & Epigenetik","s":"Sebuah obat kanker baru bekerja sebagai penghambat histon deasetilase (HDAC inhibitor). Pada sel tumor pasien, gen penekan tumor memiliki urutan DNA normal tetapi tidak aktif karena kromatinnya padat.","q":"Bagaimana obat ini dapat memulihkan fungsi gen tersebut?","o":["Memadatkan kromatin lebih lanjut agar gen penekan tumor terlindung dari mutasi","Memperbaiki urutan basa DNA gen penekan tumor yang rusak","Meningkatkan metilasi DNA pada promotor sehingga transkripsi meningkat","Melepaskan seluruh histon dari DNA sehingga nukleosom hilang total","Meningkatkan asetilasi histon, mengurangi muatan positif histon sehingga ikatannya dengan DNA melonggar, dan gen dapat ditranskripsi"],"a":4,"x":["Pemadatan lebih lanjut justru membungkam gen (heterokromatin). Tujuan terapi adalah membuka kromatin.","Urutan DNA gen sudah normal; masalahnya pada pengaturan epigenetik, bukan mutasi. Obat HDAC tidak memperbaiki urutan basa.","Metilasi DNA pada promotor umumnya menekan transkripsi. Penghambat HDAC tidak meningkatkan metilasi.","Histon tidak terlepas total; nukleosom tetap ada, hanya lebih longgar. Pelepasan total akan mengganggu stabilitas kromosom.","Tanpa aktivitas HDAC, gugus asetil pada lisin histon bertahan, muatan positif histon berkurang, afinitasnya ke DNA (bermuatan negatif) menurun, kromatin terbuka (eukromatin), dan faktor transkripsi dapat mengakses gen."]},{"t":"Transkripsi","s":"Sel hati manusia dalam kultur diberi α-amanitin, racun yang menghambat RNA polimerase II. Setelah 30 menit, peneliti mengamati sintesis protein dari beberapa gen.","q":"Apa yang paling mungkin terjadi pada tahap awal setelah pemberian racun?","o":["Replikasi DNA berhenti sehingga sel segera mati","Translasi berhenti seketika karena semua mRNA ikut rusak","Transkripsi gen penyandi protein berhenti, tetapi protein masih dibuat dari mRNA lama sampai mRNA itu terdegradasi","Ribosom tidak terbentuk karena RNA polimerase II menyintesis semua rRNA","Spliseosom menjadi aktif berlebihan sehingga intron dipertahankan"],"a":2,"x":["Replikasi DNA dilakukan DNA polimerase, bukan RNA polimerase II. Selain itu, kematian sel tidak terjadi seketika.","Racun tidak menghancurkan mRNA yang sudah ada; ia hanya menghentikan pembuatan mRNA baru. Translasi tetap berlangsung dari mRNA yang tersisa.","RNA pol II menyintesis pre-mRNA untuk gen penyandi protein. Penghambatannya menghentikan mRNA baru, tetapi mRNA yang ada tetap diterjemahkan sampai terdegradasi. Penurunan protein muncul bertahap, tergantung waktu paruh mRNA.","Sebagian besar rRNA disintesis oleh RNA polimerase I (dan RNA polimerase III untuk 5S rRNA), bukan oleh RNA polimerase II.","Racun tidak mengaktifkan spliseosom; spliseosom memotong intron dari pre-mRNA dan tidak berkaitan dengan kerja racun ini."]},{"t":"Sintesis Protein","s":"Sebuah gen memiliki untai templat 3'-TACGGATTC-5'. Gunakan tabel kodon: AUG = Met, CCU = Pro, AAG = Lys, AAU = Asn, CUU = Leu, GGA = Gly, UAC = Tyr, UUC = Phe. Seorang siswa menerjemahkan urutan tersebut menjadi polipeptida.","q":"Polipeptida manakah yang dihasilkan dari mRNA yang ditranskripsi dari templat itu?","o":["Met – Pro – Lys","Tyr – Gly – Phe","Met – Pro – Asn","Met – Leu – Lys","Met – Gly – Lys"],"a":0,"x":["Templat 3'-TACGGATTC-5' ditranskripsi menjadi mRNA 5'-AUGCCUAAG-3'. Kodonnya AUG (Met), CCU (Pro), AAG (Lys).","Tyr–Gly–Phe berasal dari membaca templat langsung sebagai kodon (UAC GGA UUC). Kodon dibaca dari mRNA, yang komplementer terhadap templat.","Kodon ketiga mRNA adalah AAG yang menyandi Lys; Asn disandi AAU atau AAC.","Kodon kedua adalah CCU (Pro), bukan CUU (Leu). Kesalahan ini muncul bila salah membaca urutan basa.","Gly disandi GGA; kodon kedua mRNA adalah CCU (Pro). GGA hanya muncul bila templat salah dibaca."]},{"t":"Mutasi Gen","s":"Empat pasien dengan penyakit metabolik diteliti. Gen penyandi enzim yang sama (120 asam amino) dibandingkan dengan orang sehat. Seorang peneliti ingin menentukan mutasi yang paling kecil kemungkinannya mengubah fungsi enzim.","q":"Mutasi manakah yang paling kecil kemungkinannya mengubah fungsi enzim?","o":["Delesi satu nukleotida pada kodon ke-3","Substitusi UGG → UGA pada kodon ke-10","Insersi dua nukleotida pada kodon ke-5","Substitusi GAA → GAG (keduanya menyandi Glu) pada kodon ke-30","Substitusi CUU → CGU (Leu → Arg) pada sisi aktif enzim"],"a":3,"x":["Delesi satu nukleotida menggeser kerangka baca (frameshift) sejak kodon ke-3 sehingga hampir seluruh asam amino setelahnya berubah.","UGA adalah kodon stop. Mutasi nonsense pada kodon ke-10 menghasilkan polipeptida hanya 9 asam amino sehingga enzim tidak berfungsi.","Insersi dua nukleotida (bukan kelipatan tiga) juga menggeser kerangka baca sehingga urutan asam amino berubah drastis.","GAA dan GAG sama-sama menyandi asam glutamat (kode genetik bersifat degeneratif), sehingga ini mutasi diam (silent) yang tidak mengubah protein.","Missense di sisi aktif mengganti asam amino nonpolar dengan asam amino bermuatan positif; perubahan ini sangat mungkin mengganggu pengikatan substrat."]},{"t":"Kode Genetik","s":"Analisis genom suatu bakteri menemukan 61 kodon yang menyandi asam amino, tetapi hanya sekitar 40 gen tRNA yang berbeda. Meski begitu, semua protein bakteri dapat disintesis normal.","q":"Penjelasan manakah yang paling tepat?","o":["Sebagian kodon tidak pernah digunakan sehingga tRNA hanya diperlukan untuk 40 kodon","Satu jenis tRNA dapat mengenali lebih dari satu kodon sinonim karena pasangan basa antara basa ketiga kodon dan basa pertama antikodon bersifat longgar (wobble)","Ribosom dapat menerjemahkan sejumlah kodon tanpa tRNA","mRNA bakteri disunting sehingga jumlah kodon yang berbeda berkurang menjadi 40","Satu tRNA membawa beberapa asam amino sekaligus"],"a":1,"x":["Seluruh 61 kodon digunakan dalam sintesis protein; tidak ada kodon yang 'tidak pernah dipakai'.","Pasangan antara basa ketiga kodon dan basa pertama antikodon fleksibel (misalnya G dengan U, atau inosin dengan A/C/U). Satu tRNA dapat membaca beberapa kodon sinonim, sehingga jumlah tRNA lebih sedikit daripada jumlah kodon.","Setiap penambahan asam amino memerlukan tRNA yang membawa asam amino tersebut; ribosom tidak dapat menerjemahkan tanpa tRNA.","Penyuntingan mRNA yang mengurangi keragaman kodon tidak terjadi secara umum; mRNA bakteri diterjemahkan langsung sesuai urutan kodonnya.","Setiap tRNA hanya membawa satu jenis asam amino yang ditentukan oleh enzim aminoasil-tRNA sintetase."]},{"t":"Transkripsi","s":"Seorang pasien menderita talasemia-β ringan. Pengurutan gen globin-β menunjukkan seluruh ekson dan intron normal, tetapi terdapat mutasi titik pada kotak TATA di promotornya. Kadar mRNA globin-β rendah.","q":"Jelaskan dampak mutasi tersebut.","o":["Urutan asam amino globin-β normal, tetapi jumlah transkrip berkurang karena faktor transkripsi dan RNA polimerase II sulit berikatan pada promotor","Globin-β berubah urutan asam aminonya karena kotak TATA bagian dari ekson","Muncul kodon stop dini sehingga protein terpotong","Replikasi gen globin-β terhenti karena promotor adalah titik awal replikasi","Tidak ada efek karena kotak TATA hanya berfungsi selama replikasi DNA"],"a":0,"x":["Kotak TATA adalah situs pengikatan faktor transkripsi (TFIID) yang merekrut RNA pol II. Mutasi mengurangi efisiensi transkripsi, sehingga mRNA dan protein lebih sedikit, meski struktur protein tetap normal.","Kotak TATA terletak di promotor (daerah pengatur), bukan ekson, sehingga tidak ikut diterjemahkan menjadi asam amino.","Kodon stop dini muncul dari mutasi nonsense di daerah penyandi. Di sini daerah penyandinya normal.","Titik awal replikasi (ori) berbeda dengan promotor. Promotor mengatur transkripsi.","Kotak TATA berfungsi pada inisiasi transkripsi, bukan replikasi. Data kadar mRNA yang rendah menunjukkan efeknya nyata."]},{"t":"Pemrosesan RNA","s":"Seorang mahasiswa memasukkan salinan gen insulin manusia lengkap (genomik, mengandung 2 intron) ke plasmid bakteri di bawah kendali promotor bakteri yang kuat, lalu mentransformasi E. coli. Transkripsi berlangsung baik, namun protein yang dihasilkan tidak berfungsi dan ukurannya tidak sesuai.","q":"Penyebab yang paling mungkin adalah …","o":["Promotor bakteri tidak dapat mengaktifkan transkripsi gen manusia","Kode genetik manusia berbeda dari kode genetik bakteri","Ribosom bakteri tidak dapat membaca mRNA yang memiliki basa urasil","Bakteri tidak memiliki spliseosom sehingga intron tidak dibuang dari transkrip dan terjemahan menjadi keliru; solusinya memakai cDNA hasil transkripsi balik dari mRNA matang","Gen insulin terlalu panjang sehingga tidak dapat masuk ke dalam plasmid"],"a":3,"x":["Skenario menyebutkan transkripsi berlangsung baik di bawah promotor bakteri, sehingga bukan itu masalahnya.","Kode genetik bersifat (hampir) universal; kodon yang sama menyandi asam amino yang sama pada manusia dan bakteri. Itu sebabnya rekayasa genetika dapat dilakukan lintas spesies.","Semua mRNA mengandung urasil, termasuk mRNA bakteri; ribosom bakteri membacanya tanpa masalah.","Gen eukariota memiliki intron yang dibuang oleh spliseosom; bakteri tidak punya spliseosom sehingga mRNA tetap memuat intron dan hasilnya salah. cDNA (tanpa intron) dibuat dari mRNA matang dengan enzim transkriptase balik.","Plasmid dapat membawa gen berukuran ribuan pasang basa; gen insulin relatif pendek, sehingga ukuran bukan masalahnya."]},{"t":"Translasi","s":"Pada gen penyandi suatu enzim, mutasi mengubah kodon awal AUG menjadi AUA. Dalam urutan mRNA terdapat AUG berikutnya 90 nukleotida di hilir (dalam kerangka baca yang sama).","q":"Apa dampak yang paling mungkin terhadap sintesis enzim?","o":["Enzim normal terbentuk karena ribosom dapat memulai translasi dari kodon mana pun","Enzim yang lebih panjang terbentuk karena AUA menyandi dua asam amino","Inisiasi tidak berlangsung efisien di posisi semula (AUA menyandi Ile dan tidak dikenali tRNA inisiator); enzim tidak terbentuk atau ribosom memulai di AUG hilir sehingga enzim kehilangan 30 asam amino pertama","Transkripsi gen berhenti karena kodon awal rusak","tRNA Met tetap mengenali AUA sehingga tidak ada perubahan"],"a":2,"x":["Translasi dimulai pada kodon awal yang dikenali tRNA inisiator-Met (AUG) dalam konteks yang tepat; ribosom tidak dapat memulai di sembarang kodon.","AUA menyandi satu asam amino (Ile), bukan dua, dan perubahan ini tidak memperpanjang protein dari posisi awal.","tRNA inisiator hanya mengenali AUG. Tanpa AUG awal, translasi tidak dimulai atau bergeser ke AUG berikutnya: 90 nt = 30 kodon, sehingga ujung N hilang 30 asam amino, yang dapat menghilangkan fungsi enzim.","Kodon awal adalah penanda translasi pada mRNA, bukan sinyal transkripsi. Transkripsi tidak bergantung pada kodon awal.","AUA menyandi Ile; antikodon tRNA-Met (UAC) berpasangan dengan AUG dan tidak berpasangan baik dengan AUA."]},{"t":"Translasi","s":"Streptomisin digunakan mengobati tuberkulosis. Obat ini terikat pada subunit kecil ribosom bakteri dan menyebabkan mRNA terbaca keliru. Pada dosis terapi, pasien umumnya tidak mengalami kerusakan sintesis protein pada sel tubuhnya sendiri.","q":"Penjelasan manakah yang paling tepat tentang kerja obat dan selektivitasnya?","o":["Obat menghambat replikasi DNA bakteri, yang tidak terdapat pada sel manusia","Obat mengubah kode genetik bakteri secara permanen sehingga sel bakteri mati","Obat merusak dinding sel bakteri sehingga sel pecah; sel manusia tidak punya dinding sel","Obat menghalangi transkripsi mRNA bakteri oleh RNA polimerase eukariota","Obat terikat pada subunit 30S ribosom 70S bakteri sehingga terjadi salah baca kodon dan protein cacat; ribosom 80S manusia berbeda struktur sehingga relatif tidak terpengaruh"],"a":4,"x":["Replikasi DNA terjadi pada manusia juga, dan streptomisin tidak menargetkan replikasi, tetapi translasi.","Obat tidak mengubah urutan DNA atau kode genetik. Ia mengganggu proses pembacaan mRNA di ribosom.","Itu mekanisme penisilin dan antibiotik β-laktam, bukan streptomisin.","Bakteri memiliki RNA polimerase prokariota, bukan eukariota. Streptomisin bekerja pada translasi, bukan transkripsi.","Streptomisin terikat pada subunit 30S ribosom bakteri (70S), menyebabkan kesalahan membaca kodon sehingga protein salah dan tidak fungsional. Ribosom eukariota (80S) memiliki struktur berbeda sehingga obat ini selektif."]},{"t":"Translasi","s":"Pada sebuah gen, mutasi mengubah kodon stop UAA di ujung daerah penyandi menjadi CAA (Gln). Sepuluh kodon di hilir terdapat kodon stop UGA dalam kerangka baca yang sama, pada daerah yang biasanya tidak diterjemahkan.","q":"Apa dampak yang paling mungkin pada polipeptida?","o":["Polipeptida bertambah panjang (sekitar sepuluh asam amino tambahan) hingga ribosom bertemu UGA","Polipeptida lebih pendek karena translasi berhenti lebih awal","Tidak ada perubahan karena kodon stop bukan bagian dari mRNA","Transkripsi berlanjut tanpa batas karena kodon stop menghentikan transkripsi","Asam amino pertama berubah karena kodon stop berpasangan dengan kodon awal"],"a":0,"x":["Kodon stop yang berubah menjadi kodon penyandi Gln membuat ribosom melanjutkan translasi sampai bertemu stop berikutnya (UGA), sehingga ekor asam amino tambahan terbentuk dan dapat mengganggu pelipatan protein.","Polipeptida memendek bila kodon penyandi berubah menjadi stop (nonsense). Di sini sebaliknya: stop berubah menjadi penyandi.","Kodon stop ada di mRNA dan berfungsi mengakhiri translasi. Perubahannya jelas berpengaruh.","Kodon stop bekerja pada translasi (dikenali faktor pelepas), bukan transkripsi. Transkripsi diakhiri oleh sinyal terminasi yang berbeda.","Kodon stop berada di ujung daerah penyandi, jauh dari kodon awal; perubahannya tidak memengaruhi asam amino pertama."]},{"t":"Sintesis Protein","s":"Suatu gen bakteri penyandi enzim memiliki daerah penyandi (dari kodon awal sampai kodon stop) sepanjang 1.203 nukleotida. Peneliti ingin menghitung jumlah ikatan peptida pada polipeptida yang terbentuk (tanpa modifikasi pascatranslasi).","q":"Berapa jumlah ikatan peptida pada polipeptida tersebut?","o":["400","399","401","1.203","398"],"a":1,"x":["400 adalah jumlah asam amino, bukan jumlah ikatan peptida. Jumlah ikatan peptida pada rantai lurus selalu satu lebih sedikit daripada jumlah asam amino.","1.203 ÷ 3 = 401 kodon; satu di antaranya kodon stop (tidak menyandi asam amino), sehingga ada 400 asam amino dan 399 ikatan peptida.","401 adalah jumlah kodon (termasuk kodon stop), bukan jumlah ikatan peptida.","1.203 adalah jumlah nukleotida; tiga nukleotida (satu kodon) menyandi satu asam amino.","398 berasal dari pengurangan ganda untuk kodon stop. Kodon stop hanya dikurangkan sekali; setelah itu baru dikurangi satu untuk menghitung ikatan peptida."]},{"t":"Mutasi Gen","s":"Di sebuah sel, sitosin pada satu untai DNA mengalami deaminasi spontan menjadi urasil. Kerusakan ini lolos dari sistem perbaikan sel, lalu sel menjalani dua kali replikasi DNA.","q":"Apa perubahan permanen yang paling mungkin pada sebagian DNA anak?","o":["Delesi satu nukleotida sehingga terjadi pergeseran kerangka baca","Pasangan C–G berubah menjadi G–C (transversi)","Tidak ada mutasi karena urasil selalu dibuang saat replikasi","Pasangan C–G langsung berubah menjadi T–A setelah satu kali replikasi","Pasangan C–G berubah menjadi T–A (transisi) setelah dua kali replikasi"],"a":4,"x":["Deaminasi mengubah satu basa, bukan menghapus nukleotida; tidak terjadi frameshift.","Pertukaran C–G menjadi G–C adalah transversi (pirimidin menjadi purin). Deaminasi sitosin menghasilkan U yang berpasangan dengan A, bukan G.","Urasil tidak otomatis dibuang. Enzim perbaikan (urasil-DNA glikosilase) biasanya memperbaikinya, tetapi pada skenario ini lolos sehingga mutasi dapat menetap.","Setelah satu replikasi, sebagian molekul baru masih berisi urasil berpasangan dengan A (U–A), belum menjadi T–A. Perubahan penuh menjadi T–A baru terjadi pada replikasi berikutnya.","Urasil berpasangan dengan adenin saat replikasi pertama (U–A pada satu anak), lalu pada replikasi kedua A berpasangan dengan T sehingga pasangan C–G berubah menjadi T–A. Ini mutasi transisi (pirimidin diganti pirimidin)."]},{"t":"Perbaikan DNA","s":"Seorang anak penderita xeroderma pigmentosum mengalami luka bakar parah pada kulit setelah sedikit terpapar matahari dan berisiko tinggi kanker kulit. Selnya cacat pada sistem perbaikan eksisi nukleotida.","q":"Mengapa cacat tersebut meningkatkan risiko kanker kulit?","o":["Sinar UV memutus ikatan fosfodiester sehingga DNA terpotong-potong","Sel kulit penderita tidak memiliki DNA polimerase","Dimer timin akibat UV tidak dibuang sehingga menghambat replikasi dan transkripsi serta menimbulkan salah-pasang basa; mutasi menumpuk di gen pengendali pembelahan sel","UV mengubah kode genetik seluruh sel menjadi kode baru yang sama","Kanker kulit disebabkan RNA yang rusak, bukan DNA"],"a":2,"x":["UV terutama menyebabkan dimer pirimidin (misalnya dimer timin), bukan pemutusan massal ikatan fosfodiester.","Sel penderita memiliki DNA polimerase normal; cacatnya spesifik pada perbaikan eksisi nukleotida.","Dimer timin mengubah bentuk heliks. Jika tidak dibuang oleh perbaikan eksisi, kesalahan replikasi menimbulkan mutasi yang menumpuk pada proto-onkogen dan gen penekan tumor, memicu kanker.","Kode genetik universal tidak berubah; UV menyebabkan kerusakan lokal, bukan mengubah kode secara menyeluruh.","Kanker kulit terkait mutasi DNA (genetik), bukan RNA."]},{"t":"Mutasi Kromosom","s":"Sepasang suami istri sehat memiliki anak pertama dengan sindrom Down. Analisis kariotipe menunjukkan ibu berkromosom 45 (termasuk satu kromosom hasil translokasi Robertson t(14;21)) dan fenotipnya normal. Anak memiliki 46 kromosom, namun materi kromosom 21-nya berlebih.","q":"Mengapa sang ibu fenotipnya normal meskipun hanya berkromosom 45?","o":["Kromosom 21 hilang tetapi tidak ada gen penting di dalamnya","Seluruh materi genetik tetap ada (translokasi seimbang): dua salinan gen kromosom 21 hanya melekat pada kromosom 14, sehingga dosis gen normal","Kromosom 14 mengandung gen pengganti kromosom 21 yang hilang","Sang ibu mengalami mosaik sehingga sebagian sel memiliki 46 kromosom","Translokasi menghapus gen yang menyebabkan sindrom Down"],"a":1,"x":["Kromosom 21 membawa banyak gen penting; tidak mungkin tanpa efek jika salinannya hilang. Di sini tidak hilang, hanya menempel pada kromosom lain.","Pada translokasi seimbang, jumlah kromosom berkurang menjadi 45 tetapi jumlah materi genetik tetap lengkap, sehingga fenotip normal. Gametnya dapat membawa kromosom 21 berlebih, menghasilkan anak dengan sindrom Down (46 kromosom).","Tidak ada gen pada kromosom 14 yang berfungsi sebagai pengganti gen kromosom 21; gen berbeda mengatur sifat berbeda.","Skenario tidak menyebutkan mosaik; penjelasan utamanya terletak pada translokasi seimbang.","Translokasi tidak menghapus gen penyebab sindrom Down; sindrom ini terjadi karena kelebihan materi kromosom 21."]},{"t":"Mutasi Gen","s":"Pada anemia sel sabit, kodon ke-6 gen globin-β pada mRNA berubah dari GAG menjadi GUG. Hanya satu basa yang berubah, namun hemoglobin penderita menggumpal saat oksigen rendah dan sel darah merah berbentuk sabit.","q":"Penjelasan molekuler yang paling tepat adalah …","o":["Terjadi frameshift sehingga seluruh asam amino setelah posisi ke-6 berubah","Terjadi mutasi nonsense sehingga rantai β terpotong","Terjadi mutasi diam sehingga tidak ada perubahan protein, tetapi lingkungan memicu penggumpalan","Mutasi missense: asam glutamat (polar, bermuatan negatif) diganti valin (nonpolar) pada permukaan rantai β sehingga muncul interaksi hidrofobik antarmolekul hemoglobin dan terbentuk polimer","Delesi tiga nukleotida menghilangkan satu asam amino penting"],"a":3,"x":["Pergantian satu basa (substitusi) tidak menggeser kerangka baca; yang berubah hanya satu asam amino.","GUG menyandi Val, bukan kodon stop; rantai β tidak terpotong.","GAG → GUG mengubah Glu menjadi Val, jadi bukan mutasi diam. Protein berubah dan itulah penyebab sifat penyakit.","Substitusi satu basa mengubah satu asam amino (Glu → Val). Valin yang hidrofobik pada permukaan menimbulkan interaksi hidrofobik antarmolekul hemoglobin terdeoksigenasi sehingga membentuk polimer.","Tidak ada delesi; jumlah nukleotida tetap, hanya satu basa yang diganti (substitusi)."]},{"t":"Mutasi Gen","s":"Pada fibrosis kistik, mutasi yang paling umum (ΔF508) adalah delesi tiga nukleotida pada gen CFTR yang menghilangkan satu fenilalanin pada posisi 508. Panjang protein hanya berkurang satu asam amino, tetapi penyakitnya berat.","q":"Mengapa delesi tiga nukleotida ini tetap berdampak berat?","o":["Kerangka baca tetap utuh, tetapi hilangnya Phe-508 mengganggu pelipatan protein CFTR sehingga dikenali sebagai cacat dan didegradasi sebelum mencapai membran sel","Delesi ini menggeser kerangka baca sehingga seluruh asam amino sesudahnya berubah","Delesi menimbulkan kodon stop dini yang memotong protein","Delesi hanya terjadi pada promotor sehingga transkripsi berhenti","Delesi tiga nukleotida selalu diperbaiki, sehingga penyakitnya disebabkan oleh faktor lingkungan"],"a":0,"x":["Delesi tiga nukleotida (kelipatan tiga) tidak menggeser kerangka baca, tetapi hilangnya satu asam amino kunci menyebabkan protein salah lipat, ditahan, dan didegradasi, sehingga kanal klorida tidak mencapai membran.","Pergeseran kerangka baca terjadi bila yang dihapus bukan kelipatan tiga. Delesi tiga nukleotida menjaga kerangka baca.","Tidak ada kodon stop dini; polipeptida hampir sepanjang normal (kurang satu asam amino).","Delesi terjadi pada daerah penyandi (ekson), bukan promotor.","Mutasi ini bersifat genetik dan diwariskan secara resesif; tidak otomatis diperbaiki dan penyakitnya bukan berasal dari faktor lingkungan."]},{"t":"Mutagen","s":"Dalam uji Ames, bakteri Salmonella mutan (his⁻, tidak dapat membuat histidin) disebar pada medium tanpa histidin. Jumlah koloni: kontrol tanpa zat uji = 12; zat X saja = 15; zat X + ekstrak hati tikus (S9) = 240.","q":"Interpretasi hasil yang paling tepat adalah …","o":["Zat X bukan mutagen karena jumlah koloni dengan zat X hampir sama dengan kontrol","Zat X mutagen langsung yang bekerja tanpa perlu diaktifkan","Zat X bersifat toksik sehingga memicu pertumbuhan koloni","Koloni tumbuh karena bakteri memperoleh histidin dari ekstrak hati","Zat X adalah promutagen: baru menjadi mutagen setelah dimetabolisme enzim hati (S9), memicu mutasi balik his⁻ → his⁺ sehingga koloni muncul pada medium tanpa histidin"],"a":4,"x":["Kesimpulan ini mengabaikan perlakuan dengan S9. Zat X menjadi aktif setelah dimetabolisme enzim hati; jumlah koloni melonjak 20 kali.","Jika mutagen langsung, koloni sudah meningkat pada perlakuan zat X saja (15 vs 12 tidak berbeda bermakna).","Toksisitas menurunkan jumlah bakteri hidup; ia tidak memicu pertumbuhan koloni pada medium tanpa histidin.","Koloni muncul karena mutasi balik menjadi his⁺, bukan karena histidin dari ekstrak; medium sengaja tidak mengandung histidin.","Peningkatan drastis hanya bila ada S9 menunjukkan X promutagen. Koloni yang tumbuh adalah revertan his⁺ akibat mutasi balik, indikator bahwa zat X mutagenik (berpotensi karsinogen)."]},{"t":"Mutasi","s":"Seorang ibu (45 tahun) didiagnosis melanoma. Biopsi menunjukkan mutasi BRAF hanya pada sel tumornya, tidak pada sel darahnya. Ia khawatir mutasi itu diwariskan kepada anaknya.","q":"Pernyataan manakah yang paling tepat?","o":["Pasti diwariskan karena semua mutasi DNA diturunkan ke keturunan","Mutasi somatik pada sel kulit tidak terdapat pada gamet sehingga tidak diwariskan; yang dapat diwariskan hanyalah mutasi pada sel germinal","Diwariskan dengan peluang 50% karena sel tumor membawa setengah genom ibu","Diwariskan jika anaknya sering terpapar sinar UV","Diwariskan melalui sel darah yang mengandung mutasi tersebut"],"a":1,"x":["Hanya mutasi pada sel germinal (atau sel yang menjadi gamet) yang diwariskan; mutasi sel somatik tidak.","Mutasi pada sel tumor (somatik) tidak masuk ke gamet sehingga tidak diwariskan. Perlu diingat, kecenderungan melanoma kadang diwariskan melalui mutasi germinal pada gen lain (misalnya CDKN2A), tetapi itu berbeda dari mutasi BRAF pada tumor ini.","Genom sel tumor ibu bukan 'setengah'; gamet dibentuk dari sel germinal, bukan dari sel tumor.","Paparan UV pada anak tidak menurunkan mutasi ibu; UV hanya dapat menimbulkan mutasi baru pada sel anak itu sendiri.","Skenario menyebut sel darah tidak membawa mutasi; kalaupun ada, sel darah bukan gamet."]},{"t":"Mutasi Kromosom","s":"Petani menghasilkan semangka tanpa biji dengan cara: mengobati semangka diploid (2n = 22) dengan kolkisin untuk menghasilkan tetraploid (4n), lalu menyilangkannya dengan semangka diploid sehingga dihasilkan tanaman triploid (3n = 33) yang buahnya tanpa biji.","q":"Mengapa tanaman triploid menghasilkan buah tanpa biji?","o":["Triploid memiliki tiga alel pada tiap gen sehingga embrio selalu letal","Kolkisin menghalangi biji terbentuk di dalam buah","Triploid gagal melakukan mitosis sehingga tidak dapat tumbuh","Pada meiosis triploid, kromosom homolog (tiga salinan) tidak dapat berpasangan dan terpisah secara seimbang sehingga gamet aneuploid dan tidak viabel; biji tidak terbentuk","Gamet triploid normal tetapi tidak dapat dibuahi secara fisik"],"a":3,"x":["Triploid tumbuh normal dan dapat hidup; yang bermasalah adalah pembentukan gamet pada meiosis.","Kolkisin hanya dipakai untuk menggandakan kromosom (menghambat gelendong); ia tidak langsung menghalangi biji pada buah.","Mitosis berjalan normal sehingga tanaman triploid tumbuh dan berbuah; hambatan terjadi pada meiosis.","Tiga salinan tiap kromosom tidak dapat berpasangan dua-dua secara seimbang pada meiosis I, sehingga gamet memiliki jumlah kromosom tidak seimbang (aneuploid) dan tidak viabel; akibatnya biji tidak terbentuk dan tanaman steril.","Gamet triploid umumnya aneuploid sehingga tidak viabel; masalahnya bukan pada kemampuan fisik untuk dibuahi."]},{"t":"Mutasi Kromosom","s":"Seorang anak laki-laki berkariotipe 47,XXY (sindrom Klinefelter). Analisis penanda DNA menunjukkan kedua kromosom X berbeda: satu berasal dari ibu dan satu dari ayah, dan kromosom Y berasal dari ayah.","q":"Kesalahan pembelahan sel yang paling mungkin adalah …","o":["Gagal berpisahnya kromosom homolog X dan Y pada meiosis I pembentukan sperma","Gagal berpisahnya kromatid saudara pada meiosis II pembentukan sperma","Gagal berpisahnya kromatid saudara pada meiosis II pembentukan sel telur","Gagal berpisahnya kromosom pada mitosis awal zigot","Mutasi pada gen SRY pada kromosom Y"],"a":0,"x":["Kedua X berbeda (satu dari ibu, satu dari ayah) dan ada Y dari ayah, berarti sperma membawa X dan Y yang berbeda (homolog). Hal ini hanya mungkin bila X dan Y gagal berpisah pada meiosis I.","Jika gagal pada meiosis II ayah, sperma membawa dua salinan kromatid saudara yang identik (XX atau YY), sehingga tidak sesuai dengan data bahwa kedua X berbeda asal-usul.","Kesalahan pada ibu akan menghasilkan dua X dari ibu; data menunjukkan satu X berasal dari ayah.","Nondisjunction mitosis akan menghasilkan mosaik; data menunjukkan X berasal dari kedua orang tua dan tidak menunjukkan mosaik.","Mutasi pada SRY mengubah penentuan jenis kelamin dan tidak menambah jumlah kromosom; ini bukan penyebab kariotipe 47,XXY."]},{"t":"Elemen Transposabel","s":"Barbara McClintock mengamati biji jagung dengan bintik-bintik ungu pada latar biji yang tidak berpigmen. Bintik berbeda ukuran dan jumlahnya pada tiap biji, meskipun seluruh sel berasal dari satu zigot yang genotipenya sama.","q":"Penjelasan genetik yang paling tepat adalah …","o":["Mutasi acak pada gen pigmen terjadi di semua sel secara bersamaan","Gen pigmen hilang permanen dari kromosom pada sebagian sel","Transposon menyisip pada gen pigmen sehingga gen tidak aktif; ketika transposon keluar (eksisi) pada sebagian sel, gen pulih dan sel serta turunan selnya berpigmen ungu","Sebagian sel kehilangan kromosom sehingga warnanya hilang","Pigmen berasal dari infeksi virus yang tersebar tidak merata"],"a":2,"x":["Mutasi acak serentak di semua sel tidak menghasilkan bintik beragam. Pola bintik menunjukkan perubahan terjadi pada sel tertentu pada waktu yang berbeda.","Gen pigmen tidak hilang; ia hanya tidak aktif ketika terganggu oleh sisipan dan pulih ketika sisipan keluar.","Elemen transposabel menyisip ke gen pigmen dan menonaktifkannya; eksisi pada sel tertentu memulihkan gen sehingga klon sel itu berpigmen. Waktu eksisi berbeda menghasilkan ukuran bintik berbeda.","Kehilangan kromosom bersifat tidak dapat balik; sel yang kehilangan akan terus tanpa pigmen dan tidak memunculkan bintik berpigmen pada latar tidak berpigmen.","Tidak ada bukti infeksi virus; bintik berasal dari perilaku gen yang dapat berpindah (transposon) dalam genom jagung itu sendiri."]},{"t":"Regulasi Gen","s":"Dua strain E. coli ditumbuhkan pada medium dengan gliserol sebagai sumber karbon (tanpa glukosa dan tanpa laktosa). Strain 1 normal; strain 2 memiliki mutasi pada gen lacI sehingga represor tidak dapat berikatan dengan operator. Peneliti mengukur aktivitas β-galaktosidase.","q":"Prediksi aktivitas β-galaktosidase pada strain 2 dibandingkan strain 1 adalah …","o":["Sama-sama rendah karena tidak ada laktosa","Tinggi pada strain 2 karena operon lac terus ditranskripsi (konstitutif), sedangkan strain 1 rendah","Tidak ada pada strain 2 karena promotor tidak aktif tanpa laktosa","Rendah pada strain 2 karena glukosa menekan operon lac","Tinggi pada strain 1 karena represor aktif memicu ekspresi gen lac"],"a":1,"x":["Strain 1 memang rendah (represor mengikat operator), tetapi strain 2 tidak punya represor fungsional sehingga operon tetap aktif walau tanpa laktosa.","Tanpa represor yang dapat berikatan dengan operator, RNA polimerase bebas mentranskripsi operon lac, sehingga β-galaktosidase dibuat terus-menerus (konstitutif). Medium tanpa glukosa memungkinkan CAP-cAMP aktif.","Promotor lac dapat aktif tanpa laktosa bila represor tidak menghalangi, terutama saat glukosa tidak ada.","Medium tidak mengandung glukosa, sehingga represi katabolit tidak terjadi.","Represor menghambat, bukan memicu, ekspresi operon lac; pada strain 1 aktivitas rendah tanpa laktosa."]},{"t":"Regulasi Gen","s":"Mutan lacIˢ menghasilkan represor yang tetap berikatan pada operator dan tidak dapat berikatan dengan alolaktosa. Bakteri mutan ini ditumbuhkan pada medium yang hanya mengandung laktosa sebagai sumber karbon.","q":"Apa yang paling mungkin terjadi?","o":["Operon lac aktif tinggi karena laktosa tersedia","Bakteri tumbuh normal karena mengambil glukosa dari medium","Represor dilepaskan oleh CAP-cAMP sehingga operon aktif","Operon lac aktif karena alolaktosa mengubah operator","Operon lac tetap tertekan walaupun ada laktosa, sehingga bakteri tidak dapat memakai laktosa dan pertumbuhannya sangat lambat"],"a":4,"x":["Pada operon lac normal, alolaktosa melepaskan represor. Pada mutan ini represor tidak dapat mengikat alolaktosa, sehingga tetap menghambat.","Medium hanya mengandung laktosa; tidak ada glukosa untuk diambil.","CAP-cAMP berfungsi sebagai aktivator positif, bukan pelepas represor; ia tidak dapat mengatasi represor yang terus menempel pada operator.","Alolaktosa tidak mengubah operator; ia berikatan dengan represor dan mengubah bentuknya, tetapi represor mutan tidak menanggapinya.","Represor mutan tidak dapat dilepaskan oleh alolaktosa sehingga RNA polimerase tetap terhalang; enzim pemecah laktosa tidak dibuat, sehingga bakteri tidak tumbuh baik pada medium laktosa saja."]},{"t":"Regulasi Gen","s":"E. coli ditumbuhkan pada medium berisi glukosa dan laktosa. Kurva pertumbuhan menunjukkan dua fase: pertumbuhan cepat, jeda singkat, lalu pertumbuhan lagi. Selama fase pertama, β-galaktosidase hampir tidak terdeteksi walau laktosa tersedia.","q":"Penjelasan paling tepat adalah …","o":["Laktosa tidak dapat masuk ke sel selama glukosa ada karena membran menutup","Glukosa menyebabkan represor lac berikatan lebih kuat dengan operator","Bakteri hanya memiliki enzim untuk glukosa pada awalnya","Glukosa menurunkan cAMP sehingga kompleks CAP-cAMP tidak terbentuk; RNA polimerase kurang efisien berikatan dengan promotor lac meskipun alolaktosa melepaskan represor","Alolaktosa baru terbentuk setelah semua glukosa habis karena glukosa mengubah laktosa menjadi glukosa"],"a":3,"x":["Laktosa dapat diambil; yang tertekan adalah ekspresi gen lac. Tidak ada mekanisme 'penutupan membran' oleh glukosa dalam model ini.","Glukosa tidak memengaruhi represor secara langsung; efeknya lewat penurunan cAMP dan aktivator CAP.","Gen lac sudah ada, tetapi ekspresinya rendah karena pengaturan positif (CAP-cAMP) tidak aktif.","Glukosa menurunkan cAMP, sehingga CAP-cAMP tidak terbentuk dan promotor lac lemah (represi katabolit). Setelah glukosa habis, cAMP naik, CAP aktif, dan operon lac diekspresikan untuk memanfaatkan laktosa.","Glukosa tidak mengubah laktosa; alolaktosa dibentuk dari laktosa oleh β-galaktosidase."]},{"t":"Regulasi Gen","s":"Operon trp pada E. coli bersifat dapat ditekan (repressible). Seorang peneliti membuat mutan dengan gen trpR (penyandi represor) yang rusak total dan menumbuhkannya pada medium kaya triptofan.","q":"Apa yang diperkirakan terjadi pada ekspresi operon trp?","o":["Operon mati total karena triptofan melimpah","Operon mati karena triptofan menghambat RNA polimerase secara langsung","Operon tetap diekspresikan walau triptofan melimpah karena represor tidak berfungsi sehingga tidak dapat menempel pada operator; sel memboroskan energi","Operon aktif hanya bila triptofan habis, seperti pada sel normal","Triptofan akan menggantikan fungsi represor sehingga operon tetap tertekan"],"a":2,"x":["Pada sel normal, triptofan (korepresor) mengaktifkan represor sehingga operon mati. Pada mutan, represor rusak sehingga tidak ada penekanan.","Triptofan tidak berikatan langsung dengan RNA polimerase; ia berperan sebagai korepresor yang mengaktifkan represor TrpR.","Operon trp dihentikan bila kompleks represor-triptofan menempel pada operator. Represor rusak tidak dapat menempel sehingga transkripsi berlangsung terus meski sel kaya triptofan (atenuasi hanya meredam sebagian).","Pada sel normal operon aktif bila triptofan sedikit; mutan trpR⁻ kehilangan penekanan sehingga aktif juga saat triptofan melimpah.","Triptofan hanya berfungsi bila ada represor aktif. Tanpa represor, triptofan tidak dapat menggantikan peran penekanan."]},{"t":"Regulasi Gen","s":"Kucing calico (tricolor) hampir selalu betina. Gen warna bulu oranye berada pada kromosom X (alel O = oranye, o = hitam). Kucing jantan calico sangat jarang dan umumnya steril.","q":"Penjelasan genetik yang paling tepat adalah …","o":["Kucing calico jantan umumnya XXY; inaktivasi acak salah satu kromosom X pada tiap sel (badan Barr) menghasilkan mosaik bercak oranye dan hitam, sedangkan jantan XY hanya punya satu alel","Gen warna bulu terletak pada kromosom Y sehingga jantan tidak mungkin calico","Betina XX membawa dua salinan gen sehingga warna campuran selalu muncul pada semua sel","Inaktivasi X pada betina bersifat permanen dan sama di seluruh sel","Calico jantan muncul karena mutasi somatik pada autosom"],"a":0,"x":["Betina heterozigot (XᴼXᵒ) mosaik karena satu X tiap sel diinaktivasi acak pada awal perkembangan (badan Barr). Jantan XY punya satu alel; calico jantan memerlukan dua X (XXY), sesuai dengan sterilitasnya.","Gen warna oranye berada pada X, bukan Y.","Dua salinan tidak otomatis menghasilkan ekspresi campuran pada semua sel; yang menentukan adalah inaktivasi acak salah satu X di tiap sel.","Inaktivasi X bersifat acak pada tiap sel, bukan sama di seluruh sel; itulah yang membuat mosaik.","Warna oranye berkaitan dengan X, bukan autosom; mutasi somatik acak tidak menjelaskan pola umum calico."]},{"t":"Genom & Kloning","s":"Pada 1996 lahir domba Dolly. Inti sel kelenjar susu domba dewasa dimasukkan ke dalam sel telur yang intinya telah dibuang, lalu embrio ditanam di rahim domba pengganti. Dolly tumbuh menjadi domba utuh dengan ciri genetik mirip domba donor inti.","q":"Apa yang paling kuat ditunjukkan oleh percobaan ini?","o":["Sel somatik yang berdiferensiasi telah kehilangan gen yang tidak dipakai","Seluruh sifat Dolly berasal dari sitoplasma sel telur","Sel telur menyediakan seluruh gen yang dibutuhkan embrio","Inti sel somatik dewasa masih memiliki genom lengkap, dan sitoplasma sel telur dapat memprogram ulang pola ekspresi gennya sehingga dapat membentuk organisme utuh","Pewarisan sifat hanya terjadi melalui DNA mitokondria"],"a":3,"x":["Jika gen hilang, Dolly tidak dapat berkembang menjadi domba utuh. Diferensiasi mengubah ekspresi gen, bukan menghilangkan gen.","Ciri genetik Dolly berasal dari DNA inti donor; sitoplasma membantu pemrograman ulang, bukan sumber utama sifat.","Inti telur sudah dibuang; gen yang mengarahkan perkembangan berasal dari inti donor.","Dolly menunjukkan bahwa diferensiasi bersifat reversibel pada tingkat ekspresi gen: inti sel dewasa masih memiliki genom lengkap (totipotensi inti) dan dapat diprogram ulang oleh sitoplasma sel telur.","DNA mitokondria memang diwariskan dari telur, tetapi sifat utama ditentukan oleh DNA inti dari donor."]},{"t":"Replikasi DNA","s":"Sebuah mutan E. coli memiliki DNA polimerase III yang tidak memiliki aktivitas eksonuklease 3'→5' (proofreading), namun aktivitas polimerasenya normal. Mutan ini dibandingkan dengan strain normal.","q":"Apa yang paling mungkin diamati?","o":["Replikasi DNA berhenti sepenuhnya sehingga sel tidak membelah","Tidak ada perbedaan karena proofreading tidak berperan dalam replikasi","Laju mutasi spontan meningkat karena nukleotida yang salah pasang tidak dikoreksi pada saat sintesis","DNA baru hanya terdiri atas satu untai","Primer RNA tidak dibuang sehingga DNA mengandung RNA"],"a":2,"x":["Aktivitas polimerase normal, sehingga DNA tetap dapat disintesis; hanya kesalahan yang meningkat.","Proofreading membuang nukleotida salah di ujung 3' segera setelah penambahan; tanpanya tingkat kesalahan naik nyata.","Aktivitas eksonuklease 3'→5' membuang nukleotida salah-pasang segera setelah ditambahkan. Tanpanya, lebih banyak kesalahan lolos (walau sebagian masih diperbaiki oleh perbaikan salah-pasang), sehingga laju mutasi spontan meningkat.","Polimerase tetap menyintesis untai baru berpasangan dengan setiap untai templat; produk tetap dua molekul DNA ganda.","Pembuangan primer RNA dilakukan oleh DNA polimerase I (atau RNase H), bukan oleh fungsi proofreading polimerase III."]},{"t":"Replikasi DNA","s":"Sel somatik manusia hanya dapat membelah sekitar 50 kali dalam kultur (batas Hayflick), sedangkan sel kanker dapat membelah tanpa batas. Panjang telomer sel somatik berkurang tiap pembelahan, sedangkan telomer sel kanker dipertahankan.","q":"Penjelasan yang paling tepat adalah …","o":["Telomer memanjang setiap pembelahan pada sel somatik hingga menutup kromosom","Pada sel somatik, ujung untai lagging tidak dapat direplikasi sempurna karena primer di ujung dihapus, sehingga telomer memendek; sel kanker mengaktifkan telomerase yang memperpanjang telomer sehingga pembelahan tidak terbatas","Telomerase menyintesis primer RNA untuk fragmen Okazaki di seluruh kromosom","Sel kanker membelah tanpa batas karena tidak memiliki telomer sama sekali","Telomer berfungsi sebagai gen penyandi enzim DNA polimerase"],"a":1,"x":["Telomer memendek, bukan memanjang, pada sel somatik tanpa telomerase.","Karena DNA polimerase memerlukan primer dan hanya menyintesis 5'→3', ujung templat lagging tidak lengkap direplikasi (masalah replikasi ujung). Telomer memendek tiap siklus; telomerase pada sel kanker memperpanjangnya sehingga sel menghindari penuaan.","Telomerase memperpanjang ujung kromosom menggunakan templat RNA internalnya, bukan menyediakan primer untuk fragmen Okazaki.","Sel kanker memiliki telomer, tetapi panjangnya dipertahankan oleh telomerase atau mekanisme lain.","Telomer adalah urutan DNA berulang non-penyandi di ujung kromosom, bukan gen penyandi polimerase."]},{"t":"Replikasi DNA","s":"Pada satu garpu replikasi eukariota, untai leading dan untai lagging masing-masing disintesis sepanjang 30.000 nukleotida. Fragmen Okazaki rata-rata berukuran 150 nukleotida dan setiap fragmen dimulai oleh satu primer RNA; untai leading hanya memerlukan satu primer di titik awal.","q":"Berapa jumlah primer RNA minimum yang diperlukan untuk menyintesis kedua untai tersebut?","o":["200","2","30.000","202","201"],"a":4,"x":["200 hanya menghitung primer untuk untai lagging; untai leading tetap memerlukan satu primer.","Dua primer hanya cukup bila kedua untai disintesis kontinu; untai lagging diskontinu sehingga membutuhkan banyak primer.","30.000 adalah panjang untai (nukleotida), bukan jumlah primer; setiap primer memulai satu fragmen sepanjang 150 nukleotida.","202 menambahkan satu primer ekstra di luar data soal; hanya untai leading yang memerlukan satu primer.","Lagging: 30.000 ÷ 150 = 200 fragmen sehingga 200 primer. Leading: 1 primer. Total 201."]},{"t":"Genom & Kloning","s":"Genom bawang (Allium cepa) berukuran sekitar 16 miliar pasang basa, lima kali lebih besar daripada genom manusia (±3,2 miliar pasang basa), padahal bawang tidak lebih 'kompleks' daripada manusia dan jumlah gennya tidak jauh berbeda.","q":"Penjelasan paling tepat adalah …","o":["Ukuran genom tidak selalu mencerminkan jumlah gen atau kompleksitas; sebagian besar DNA bawang berupa urutan non-penyandi dan pengulangan (misalnya transposon)","Bawang lebih kompleks sehingga memerlukan lebih banyak gen","Seluruh DNA bawang menyandi protein sehingga lebih panjang","Manusia memiliki lebih banyak kromosom sehingga DNA-nya lebih panjang","Bawang mereplikasi DNA berkali-kali sehingga genomnya tampak lebih besar"],"a":0,"x":["Ini disebut paradoks nilai-C: ukuran genom tidak berbanding lurus dengan jumlah gen. Genom besar sering dipenuhi DNA berulang dan non-penyandi.","Kompleksitas organisme tidak diukur dari ukuran genom; jumlah gen bawang dan manusia sebanding.","Sebagian besar DNA eukariota tidak menyandi protein; pada manusia hanya sekitar 1–2%.","Manusia memiliki 46 kromosom dan bawang 16, dan jumlah kromosom tidak menentukan ukuran total genom.","Replikasi berulang tidak menambah ukuran genom per sel; ukuran genom ditentukan oleh jumlah DNA per set kromosom."]},{"t":"Teknologi DNA","s":"Teknisi menjalankan PCR dengan program: denaturasi 95 °C 30 detik; anil 72 °C 30 detik; ekstensi 72 °C 1 menit; 30 siklus, memakai primer 20 nukleotida dengan suhu leleh (Tm) sekitar 58 °C dan Taq polimerase. Setelah elektroforesis, tidak ada pita DNA yang tampak, padahal DNA templat dan reagen baik.","q":"Penyebab yang paling mungkin adalah …","o":["Suhu denaturasi 95 °C terlalu tinggi sehingga seluruh DNA rusak permanen","Suhu anil 72 °C terlalu tinggi sehingga primer tidak dapat menempel stabil pada templat dan tidak ada produk yang disintesis","Taq polimerase rusak pada 95 °C sehingga tidak dapat menyintesis DNA","Primer terlalu panjang sehingga tidak dapat menempel","Elektroforesis berjalan ke arah katoda sehingga pita tidak terlihat"],"a":1,"x":["Denaturasi 95 °C memang diperlukan untuk memisahkan untai; DNA tidak rusak permanen oleh suhu itu.","Anil harus mendekati Tm primer (±55–58 °C). Pada 72 °C primer hampir tidak menempel sehingga polimerase tidak memperbanyak DNA.","Taq polimerase berasal dari bakteri termofil (Thermus aquaticus) dan tahan suhu 95 °C.","Primer 20 nukleotida adalah ukuran normal; panjang primer bukan penyebab kegagalan.","DNA bermuatan negatif bergerak menuju anoda (+). Soal tidak memberi petunjuk kesalahan elektroforesis; petunjuk kegagalan ada pada program PCR."]},{"t":"Teknologi DNA","s":"Pada uji paternitas, sidik jari DNA (RFLP) menghasilkan pita (ukuran dalam kb): Anak = 3, 5, 8, 11; Ibu = 5, 11. Empat pria diuji: Pria A = 3, 8, 9; Pria B = 2, 5, 11; Pria C = 5, 8, 12; Pria D = 3, 5, 11.","q":"Siapa yang paling mungkin ayah biologis anak?","o":["Pria B","Pria C","Pria A","Pria D","Tidak dapat ditentukan"],"a":2,"x":["Pria B hanya berbagi pita 5 dan 11 yang sudah berasal dari ibu; ia tidak memiliki pita 3 maupun 8 yang harus berasal dari ayah.","Pria C memiliki pita 8 tetapi tidak memiliki pita 3; kedua pita anak yang tidak berasal dari ibu harus dimiliki ayah.","Pita 5 dan 11 berasal dari ibu; pita 3 dan 8 harus berasal dari ayah. Hanya Pria A yang memiliki keduanya.","Pria D memiliki pita 3, tetapi tidak memiliki pita 8; pita 5 dan 11 sudah dijelaskan oleh ibu.","Data cukup: hanya satu pria yang memenuhi kedua pita yang tidak berasal dari ibu."]},{"t":"Teknologi DNA","s":"Seorang mahasiswa memotong DNA sumber dengan EcoRI (G^AATTC) dan memotong plasmid dengan BamHI (G^GATCC), lalu mencampurkannya dengan DNA ligase. Setelah transformasi, tidak ada koloni rekombinan.","q":"Penyebab kegagalan yang paling tepat adalah …","o":["Plasmid menjadi terlalu kecil setelah dipotong sehingga tidak dapat bereplikasi","DNA ligase hanya dapat menyambung ujung tumpul","Enzim restriksi memotong DNA secara acak sehingga fragmen tidak dapat disambung","Ujung lengket hasil EcoRI (AATT) dan BamHI (GATC) tidak komplementer sehingga fragmen tidak dapat berikatan dan disambung; sebaiknya digunakan enzim yang sama atau enzim yang menghasilkan ujung kompatibel","EcoRI dan BamHI hanya memutus ikatan hidrogen antar-basa"],"a":3,"x":["Ukuran plasmid bukan masalah; plasmid yang dipotong satu kali hanya terbuka (linear) dan dapat menyambung kembali.","DNA ligase dapat menyambung ujung lengket maupun tumpul, asalkan ujungnya kompatibel.","Enzim restriksi mengenali urutan spesifik (situs restriksi), bukan memotong acak.","EcoRI menghasilkan ujung lengket 5'-AATT, BamHI menghasilkan 5'-GATC. Keduanya tidak dapat berpasangan sehingga insert tidak dapat bergabung dengan vektor.","Enzim restriksi memotong ikatan fosfodiester pada tulang punggung gula-fosfat, bukan hanya memutus ikatan hidrogen."]},{"t":"Teknologi DNA","s":"Plasmid vektor membawa gen ketahanan ampisilin (ampR) dan gen lacZ yang di dalamnya terdapat situs kloning ganda. Gen target disisipkan ke situs tersebut, lalu plasmid ditransformasi ke E. coli yang tidak punya lacZ dan peka ampisilin. Bakteri disebar pada medium dengan ampisilin dan X-gal (substrat yang menjadi biru bila dipecah β-galaktosidase).","q":"Koloni manakah yang membawa plasmid rekombinan (dengan gen target)?","o":["Koloni putih","Koloni biru","Tidak ada koloni yang tumbuh","Koloni biru pada medium tanpa ampisilin","Semua koloni tanpa melihat warna"],"a":0,"x":["Bakteri yang tumbuh di medium ampisilin membawa plasmid (ampR). Sisipan gen target merusak lacZ sehingga tidak ada β-galaktosidase dan X-gal tidak berubah warna: koloni putih.","Koloni biru memiliki lacZ utuh (plasmid tanpa sisipan yang menutup kembali), sehingga X-gal dipecah menjadi biru.","Bakteri dengan plasmid (ampR) tumbuh pada ampisilin; sebagian akan membentuk koloni.","Medium pada soal memakai ampisilin; selain itu koloni biru tetap tidak berisi sisipan.","Sebagian koloni membawa plasmid tanpa sisipan sehingga tidak semuanya rekombinan; warna diperlukan sebagai penanda."]},{"t":"Teknologi DNA","s":"Seorang peneliti ingin menonaktifkan gen penyebab resistensi obat pada sel kultur dengan CRISPR-Cas9 tanpa menyediakan DNA cetakan perbaikan. RNA pemandu (gRNA) dirancang komplementer terhadap bagian awal ekson gen tersebut.","q":"Mengapa strategi ini dapat menonaktifkan gen?","o":["Cas9 menghancurkan mRNA gen sehingga translasi berhenti","gRNA sendiri memotong DNA sehingga Cas9 tidak diperlukan","Cas9 selalu menghapus seluruh gen dari kromosom","Cas9 menambahkan gugus metil pada gen sehingga dibungkam","gRNA mengarahkan Cas9 ke urutan target dan memotong kedua untai DNA; perbaikan sambungan-ujung nonhomolog (NHEJ) cenderung menyisipkan atau menghapus beberapa nukleotida (indel) yang menggeser kerangka baca sehingga gen tidak berfungsi"],"a":4,"x":["Cas9 memotong DNA (CRISPR-Cas9 standar), bukan mRNA.","gRNA hanya memandu; pemotongan DNA dilakukan enzim Cas9.","Cas9 membuat pemotongan terarah di satu lokasi; perbaikanlah yang menentukan hasilnya. Penghapusan seluruh gen tidak terjadi.","Cas9 standar tidak memetilasi gen; metilasi dilakukan oleh DNA metiltransferase.","Perbaikan NHEJ tidak akurat sehingga sering menimbulkan indel yang menggeser kerangka baca atau memunculkan kodon stop, dan gen menjadi tidak berfungsi (knockout). Tanpa cetakan HDR, jalur NHEJ yang dominan."]},{"t":"Teknologi DNA","s":"Bayi dengan imunodefisiensi berat ADA-SCID (tidak punya enzim adenosin deaminase) diterapi dengan memasukkan gen ADA normal ke sel punca darahnya menggunakan vektor retrovirus, lalu sel dikembalikan ke tubuhnya. Pada beberapa uji coba awal, sebagian pasien kemudian mengalami leukemia.","q":"Pernyataan yang paling tepat tentang terapi ini adalah …","o":["Terapi germinal sehingga anak pasien kelak mewarisi gen ADA normal","Terapi somatik: perubahan genetik hanya pada sel tubuh yang diterapi dan tidak diwariskan; leukemia dapat timbul karena sisipan vektor mengaktifkan onkogen atau mengganggu gen penekan tumor (mutagenesis insersional)","Terapi ini menghapus alel ADA mutan dari semua sel tubuh sehingga pasien sembuh seumur hidup tanpa risiko","Leukemia timbul karena enzim ADA yang berlebih meracuni sel","Vektor retrovirus menyisip tepat pada lokus ADA sehingga tidak berisiko"],"a":1,"x":["Terapi ini menyasar sel punca darah (somatik), bukan sel germinal, sehingga tidak diwariskan.","Terapi gen somatik tidak diwariskan. Retrovirus menyisip ke genom pada posisi acak sehingga dapat mengaktifkan onkogen atau mengganggu gen penekan tumor, yang menjelaskan leukemia pada sebagian pasien.","Gen normal ditambahkan; alel mutan tidak dihapus. Hasilnya juga tidak bebas risiko (leukemia pada skenario).","Skenario tidak menunjukkan keracunan enzim; leukemia dikaitkan dengan lokasi penyisipan vektor di genom.","Retrovirus cenderung menyisip di tempat acak, bukan tepat di lokus ADA. Penyisipan acak itulah yang berisiko."]},{"t":"Teknologi DNA","s":"Pada TKP ditemukan bercak darah. Profil STR bercak darah dan tersangka cocok pada empat lokus. Frekuensi genotipe tersebut dalam populasi: lokus 1 = 1/10, lokus 2 = 1/20, lokus 3 = 1/5, lokus 4 = 1/10. Lokus-lokus ini terletak pada kromosom berbeda dan diwariskan bebas.","q":"Berapa peluang seseorang acak dari populasi memiliki keempat genotipe itu sekaligus?","o":["1/45","1/200","1/1.000","1/10.000","1/100.000"],"a":3,"x":["1/45 diperoleh dari menjumlahkan penyebut (10 + 20 + 5 + 10). Peluang kejadian yang saling bebas dikalikan, bukan dijumlahkan.","1/200 hanya mengalikan sebagian lokus (misalnya 1/10 × 1/20). Semua empat lokus harus diperhitungkan.","1/1.000 tidak berasal dari perkalian keempat frekuensi (misalnya hanya mengalikan 1/10 tiga kali).","Karena lokus saling bebas, peluang gabungan = 1/10 × 1/20 × 1/5 × 1/10 = 1/10.000. Semakin banyak lokus, semakin spesifik profilnya.","1/100.000 terlalu kecil; hasil perkalian keempat lokus adalah 1/10.000."]},{"t":"Teknologi DNA","s":"Dalam pengurutan DNA metode Sanger, reaksi memakai dNTP dan sejumlah kecil ddNTP (dideoksinukleotida) bertanda fluoresen. Seorang teknisi tidak sengaja memakai konsentrasi ddNTP jauh lebih tinggi dari seharusnya.","q":"Bagaimana hasil pengurutan kemungkinan berubah?","o":["Fragmen yang dihasilkan menjadi lebih panjang","Tidak ada perubahan karena ddNTP tidak memengaruhi polimerase","Terminasi rantai terjadi terlalu dini sehingga fragmen pendek dominan dan sinyal untuk bagian urutan yang jauh dari primer lemah atau hilang","ddNTP mempercepat polimerase sehingga bacaan menjadi akurat","Semua fragmen berukuran sama sehingga urutan tidak dapat dibaca"],"a":2,"x":["ddNTP menghentikan pemanjangan, sehingga lebih banyak ddNTP membuat fragmen lebih pendek, bukan lebih panjang.","ddNTP tidak memiliki gugus 3'-OH; setelah masuk, DNA polimerase tidak dapat menambah nukleotida berikutnya.","ddNTP tidak punya gugus 3'-OH sehingga menghentikan rantai. Konsentrasi tinggi meningkatkan peluang terminasi pada setiap posisi, sehingga banyak fragmen sangat pendek dan fragmen panjang jarang terbentuk.","ddNTP menghentikan sintesis, bukan mempercepat polimerase.","Fragmen tetap beragam ukuran (menurut posisi terminasi); hanya komposisinya bergeser ke yang pendek. Urutan dekat primer masih dapat dibaca."]},{"t":"Teknologi DNA","s":"Tim identifikasi korban bencana menemukan kerangka yang diduga seorang pria bernama Budi. DNA inti rusak, tetapi DNA mitokondria (mtDNA) masih dapat dianalisis. Sampel pembanding dipilih dari kerabat Budi yang masih hidup.","q":"Kerabat manakah yang paling tepat sebagai pembanding mtDNA Budi?","o":["Anak dari saudara laki-laki ibunya","Anak dari saudara perempuan ayahnya","Anak dari saudara perempuan ibunya","Ayah kandungnya","Anak dari saudara laki-laki ayahnya"],"a":2,"x":["Anak dari saudara laki-laki ibu mewarisi mtDNA dari ibunya sendiri (istri paman), yang tidak berkerabat secara maternal dengan Budi.","Anak dari saudara perempuan ayah mewarisi mtDNA dari ibunya (saudari ayah), yang berbeda garis maternal dari ibu Budi.","mtDNA diwariskan hanya dari ibu. Budi dan sepupunya (anak saudari ibunya) sama-sama mewarisi mtDNA dari garis maternal yang sama, yaitu nenek dari pihak ibu.","Ayah tidak mewariskan mtDNA kepada anak; mtDNA Budi berasal dari ibunya.","Anak dari saudara laki-laki ayah mewarisi mtDNA dari ibunya sendiri, bukan dari garis maternal Budi."]},{"t":"Teknologi DNA","s":"Zidovudin (AZT) adalah analog timidin yang tidak memiliki gugus 3'-OH pada gula pentosanya, digunakan untuk menekan HIV. HIV adalah retrovirus yang mengubah RNA genomnya menjadi DNA dengan enzim transkriptase balik (reverse transcriptase).","q":"Bagaimana AZT dapat menghambat pembentukan DNA virus?","o":["AZT yang dimasukkan transkriptase balik ke rantai DNA yang sedang dibuat menghentikan pemanjangan karena tidak ada 3'-OH untuk menyambung nukleotida berikutnya; transkriptase balik virus lebih mudah memakai AZT daripada DNA polimerase manusia","AZT menghancurkan RNA virus sebelum sempat ditranskripsi balik","AZT memotong DNA inang di tempat provirus menyisip","AZT mengubah transkriptase balik menjadi enzim yang menyintesis protein","AZT menghalangi translasi mRNA virus pada ribosom"],"a":0,"x":["Seperti ddNTP pada metode Sanger, AZT tidak memiliki 3'-OH sehingga menghentikan rantai (terminasi). Transkriptase balik HIV memasukkannya lebih mudah daripada DNA polimerase sel manusia, sehingga obat ini lebih selektif terhadap virus.","AZT tidak merusak RNA; ia bekerja sebagai pengganti nukleotida pada sintesis DNA.","AZT tidak bertindak sebagai enzim pemotong DNA; ia analog nukleotida penghenti rantai.","AZT tidak mengubah fungsi enzim menjadi enzim penyintesis protein; protein disintesis oleh ribosom melalui translasi.","Translasi mRNA virus berlangsung di ribosom; AZT bekerja pada sintesis DNA oleh transkriptase balik, bukan translasi."]}]</script>
+<script>
+(function () {
+  'use strict';
+  var BANK = JSON.parse(document.getElementById('bank').textContent);
+  var N = BANK.length, PER = 2;
+  var LS = 'kuis-genetik-v1', LSN = 'kuis-genetik-v1-n';
+  var LET = ['A', 'B', 'C', 'D', 'E'];
+  var state = null, pick = -1, cur = 0, reviewing = false;
+  var env = { user: null, db: null, dl: null, uid: null, isOwner: false, canEdit: false, ready: null };
+
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function loadState() {
+    var s = lsGet(LS); if (!s) return null;
+    try { var o = JSON.parse(s); if (o && o.v === 1 && o.ans && o.ans.length === N && o.ord && o.ord.length === N) return o; } catch (e) {}
+    return null;
+  }
+  function saveState() { lsSet(LS, JSON.stringify(state)); }
+  function perm() { var a = [0, 1, 2, 3, 4]; for (var i = 4; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+
+  function tally(s) {
+    var b = 0, d = 0, pola = '';
+    for (var i = 0; i < N; i++) {
+      if (s.ans[i] === -1) { pola += '-'; continue; }
+      d++;
+      if (s.ans[i] === BANK[i].a) { b++; pola += '1'; } else { pola += '0'; }
+    }
+    return { benar: b, dijawab: d, nilai: b * PER, pola: pola };
+  }
+
+  /* ---------- Lingkungan (db, user, downloads) ---------- */
+  env.ready = (async function () {
+    var c = window.claude;
+    if (!c || !c.use) return;
+    try { env.user = await c.use('user'); } catch (e) {}
+    try { env.db = await c.use('db'); } catch (e) {}
+    try { env.dl = await c.use('downloads'); } catch (e) {}
+    if (env.user) {
+      try { env.uid = await env.user.id(); } catch (e) {}
+      try { env.isOwner = await env.user.isOwner(); } catch (e) {}
+      try { env.canEdit = await env.user.canEdit(); } catch (e) {}
+    }
+  })().then(function () {
+    var on = !!(env.db && env.uid);
+    $('dbStatus').textContent = on
+      ? 'Pengumpulan nilai aktif: hasilmu masuk ke rekap pembuat soal saat kuis dikumpulkan.'
+      : 'Pengumpulan nilai otomatis tidak aktif di tampilan ini. Setelah selesai, unduh hasilmu dan serahkan ke guru.';
+    if (env.db && (env.isOwner || env.canEdit)) $('btnRekap').hidden = false;
+  });
+
+  /* ---------- Tampilan ---------- */
+  var VIEWS = ['start', 'quiz', 'result', 'rekap'];
+  function show(name) {
+    VIEWS.forEach(function (v) { $('v-' + v).hidden = (v !== name); });
+    var inQuiz = (name === 'quiz');
+    $('bSoalBox').hidden = !inQuiz; $('bSkorBox').hidden = !inQuiz;
+    updateBar();
+    window.scrollTo(0, 0);
+  }
+  function updateBar() {
+    var nama = state ? state.nama : $('inNama').value.trim();
+    var kelas = state ? state.kelas : $('inKelas').value.trim();
+    if (!$('v-start').hidden) { nama = $('inNama').value.trim() || (state ? state.nama : ''); kelas = $('inKelas').value.trim() || (state ? state.kelas : ''); }
+    $('bNama').textContent = nama || '—';
+    $('bKelas').textContent = kelas || '—';
+    if (state) {
+      var t = tally(state);
+      $('bSoal').textContent = (Math.min(state.idx + 1, N)) + '/' + N;
+      $('bSkor').textContent = t.nilai;
+    }
+  }
+
+  /* ---------- Mulai ---------- */
+  function newAttempt(nama, kelas) {
+    var n = parseInt(lsGet(LSN) || '0', 10) || 0; n++; lsSet(LSN, String(n));
+    var ans = [], ord = [];
+    for (var i = 0; i < N; i++) { ans.push(-1); ord.push(perm()); }
+    state = { v: 1, nama: nama, kelas: kelas, mulai: Date.now(), idx: 0, ans: ans, ord: ord, done: false, sent: 'idle', percobaan: n };
+    saveState();
+    beginQuiz();
+  }
+  function beginQuiz() { reviewing = false; cur = state.idx; pick = -1; buildLane(); show('quiz'); renderQuestion(); }
+
+  $('startForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var nama = $('inNama').value.trim().replace(/\s+/g, ' ');
+    var kelas = $('inKelas').value.trim().replace(/\s+/g, ' ');
+    if (nama.length < 2) { $('startErr').textContent = 'Isi nama lengkap terlebih dahulu.'; $('inNama').focus(); return; }
+    if (!kelas) { $('startErr').textContent = 'Isi kelas terlebih dahulu.'; $('inKelas').focus(); return; }
+    $('startErr').textContent = '';
+    newAttempt(nama, kelas);
+  });
+  $('inNama').addEventListener('input', function () { $('startErr').textContent = ''; updateBar(); });
+  $('inKelas').addEventListener('input', function () { $('startErr').textContent = ''; updateBar(); });
+
+  function setupResume() {
+    var s = loadState();
+    if (!s) { $('resumeBox').hidden = true; return; }
+    state = s;
+    $('inNama').value = s.nama; $('inKelas').value = s.kelas;
+    var t = tally(s);
+    if (s.done) {
+      $('resumeText').textContent = 'Kuis terakhir atas nama ' + s.nama + ' (' + s.kelas + ') sudah dikumpulkan dengan nilai ' + t.nilai + '.';
+      $('btnResume').textContent = 'Lihat hasil';
+    } else {
+      $('resumeText').textContent = 'Ada kuis yang belum selesai atas nama ' + s.nama + ' (' + s.kelas + '), sampai soal ke-' + (s.idx + 1) + '.';
+      $('btnResume').textContent = 'Lanjutkan';
+    }
+    $('resumeBox').hidden = false;
+    updateBar();
+  }
+  $('btnResume').addEventListener('click', function () {
+    if (!state) return;
+    if (state.done) { renderResult(); show('result'); } else { beginQuiz(); }
+  });
+  $('btnFresh').addEventListener('click', function () {
+    state = null; try { localStorage.removeItem(LS); } catch (e) {}
+    $('resumeBox').hidden = true; $('inNama').value = ''; $('inKelas').value = '';
+    updateBar(); $('inNama').focus();
+  });
+
+  /* ---------- Soal ---------- */
+  function buildLane() {
+    var lane = $('lane'); lane.textContent = '';
+    for (var i = 0; i < N; i++) lane.appendChild(el('i'));
+  }
+  function paintLane() {
+    var cells = $('lane').children;
+    var answered = 0;
+    for (var i = 0; i < N; i++) {
+      var c = cells[i]; var cls = '';
+      if (state.ans[i] !== -1) { answered++; cls = (state.ans[i] === BANK[i].a) ? 'ok' : 'no'; }
+      if (i === cur && !reviewing) cls = cls ? cls : 'on';
+      c.className = cls;
+      if (i === cur && !reviewing && cls !== 'on') c.style.outline = '2px solid var(--accent)'; else c.style.outline = '';
+    }
+    $('lane').setAttribute('aria-label', 'Kemajuan kuis: ' + answered + ' dari ' + N + ' soal terjawab');
+  }
+
+  function renderQuestion() {
+    var q = BANK[cur], ord = state.ord[cur];
+    var chosen = state.ans[cur];
+    var checked = (chosen !== -1) || reviewing;
+    $('qmeta').textContent = 'Soal ' + (cur + 1) + ' dari ' + N + ' · ' + q.t;
+    $('qscen').textContent = q.s;
+    $('qask').textContent = q.q;
+    var box = $('opts'); box.textContent = '';
+    ord.forEach(function (orig, pos) {
+      var wrap = el('div', 'opt-wrap');
+      var b = el('button', 'opt'); b.type = 'button'; b.setAttribute('data-orig', String(orig));
+      b.appendChild(el('span', 'ltr', LET[pos]));
+      b.appendChild(el('span', 'txt', q.o[orig]));
+      wrap.appendChild(b);
+      if (checked) {
+        b.disabled = true;
+        var why = el('div', 'why');
+        if (orig === q.a) { b.classList.add('good'); why.appendChild(el('span', 'chip good', 'Tepat')); }
+        else if (orig === chosen) { b.classList.add('bad'); why.appendChild(el('span', 'chip bad', 'Pilihanmu · kurang tepat')); }
+        else { why.appendChild(el('span', 'chip', 'Kurang tepat')); }
+        why.appendChild(document.createTextNode(q.x[orig]));
+        wrap.appendChild(why);
+      } else {
+        b.addEventListener('click', function () { choose(orig); });
+        if (orig === pick) b.classList.add('sel');
+      }
+      box.appendChild(wrap);
+    });
+    var v = $('verdict');
+    if (checked) {
+      var letter = LET[ord.indexOf(q.a)];
+      v.hidden = false; v.className = 'verdict';
+      if (chosen === q.a) { v.classList.add('good'); v.textContent = 'Jawabanmu tepat. +' + PER + ' poin.'; }
+      else if (chosen === -1) { v.classList.add('none'); v.textContent = 'Soal ini belum kamu jawab. Jawaban yang tepat adalah pilihan ' + letter + '.'; }
+      else { v.classList.add('bad'); v.textContent = 'Belum tepat. Jawaban yang tepat adalah pilihan ' + letter + '.'; }
+    } else { v.hidden = true; }
+    $('btnCheck').hidden = checked; $('btnCheck').disabled = (pick === -1);
+    $('btnNext').hidden = !(checked && !reviewing);
+    $('btnNext').textContent = (cur === N - 1) ? 'Kumpulkan nilai' : 'Soal berikutnya';
+    $('btnBack').hidden = !reviewing;
+    $('endRow').hidden = reviewing;
+    $('endConfirm').hidden = true; $('btnEnd').hidden = false;
+    paintLane(); updateBar();
+    $('qask').focus({ preventScroll: true });
+    if (!reviewing) window.scrollTo(0, 0);
+  }
+
+  function choose(orig) {
+    if (state.ans[cur] !== -1 || reviewing) return;
+    pick = orig;
+    var bs = $('opts').querySelectorAll('.opt');
+    for (var i = 0; i < bs.length; i++) bs[i].classList.toggle('sel', Number(bs[i].getAttribute('data-orig')) === orig);
+    $('btnCheck').disabled = false;
+  }
+  $('btnCheck').addEventListener('click', function () {
+    if (pick === -1 || state.ans[cur] !== -1) return;
+    state.ans[cur] = pick; state.idx = cur; saveState();
+    renderQuestion();
+    $('btnNext').focus({ preventScroll: true });
+  });
+  $('btnNext').addEventListener('click', function () {
+    if (cur < N - 1) { cur++; state.idx = cur; pick = -1; saveState(); renderQuestion(); }
+    else { finish(); }
+  });
+  $('btnEnd').addEventListener('click', function () {
+    var t = tally(state);
+    $('endText').textContent = (N - t.dijawab) > 0
+      ? 'Kumpulkan sekarang? ' + (N - t.dijawab) + ' soal yang belum dijawab dihitung salah.'
+      : 'Kumpulkan sekarang?';
+    $('endConfirm').hidden = false; $('btnEnd').hidden = true;
+  });
+  $('btnEndNo').addEventListener('click', function () { $('endConfirm').hidden = true; $('btnEnd').hidden = false; });
+  $('btnEndYes').addEventListener('click', function () { finish(); });
+
+  document.addEventListener('keydown', function (e) {
+    if ($('v-quiz').hidden || reviewing || e.ctrlKey || e.metaKey || e.altKey) return;
+    var tg = e.target && e.target.tagName;
+    if (tg === 'INPUT' || tg === 'SELECT' || tg === 'TEXTAREA') return;
+    var k = e.key.toLowerCase(), pos = 'abcde'.indexOf(k);
+    if (pos === -1 && k >= '1' && k <= '5') pos = Number(k) - 1;
+    if (k.length === 1 && pos > -1 && state.ans[cur] === -1) { choose(state.ord[cur][pos]); return; }
+    if (k === 'enter' && tg !== 'BUTTON') {
+      if (state.ans[cur] === -1 && pick !== -1) $('btnCheck').click();
+      else if (state.ans[cur] !== -1) $('btnNext').click();
+    }
+  });
+
+  /* ---------- Selesai & hasil ---------- */
+  function finish() {
+    state.done = true; state.sent = 'idle'; state.selesai = Date.now(); saveState();
+    renderResult(); show('result');
+    submitScore();
+  }
+
+  function renderResult() {
+    var t = tally(state);
+    $('rNilai').textContent = t.nilai;
+    $('rRingkas').textContent = state.nama + ' (' + state.kelas + '): ' + t.benar + ' benar dari ' + N + ' soal' + (t.dijawab < N ? ', ' + (N - t.dijawab) + ' tidak dijawab' : '') + '.';
+    var topik = {}, order = [];
+    for (var i = 0; i < N; i++) {
+      var k = BANK[i].t; if (!topik[k]) { topik[k] = { b: 0, n: 0 }; order.push(k); }
+      topik[k].n++; if (state.ans[i] === BANK[i].a) topik[k].b++;
+    }
+    var tb = $('rTopik'); tb.textContent = '';
+    order.forEach(function (k) {
+      var tr = el('tr'); tr.appendChild(el('td', '', k)); tr.appendChild(el('td', 'num', String(topik[k].b))); tr.appendChild(el('td', 'num', String(topik[k].n)));
+      tb.appendChild(tr);
+    });
+    var pr = $('rTinjau'); pr.textContent = '';
+    var wrong = 0;
+    for (var j = 0; j < N; j++) {
+      var ok = state.ans[j] === BANK[j].a;
+      if (ok) continue;
+      wrong++;
+      (function (idx) {
+        var b = el('button', 'qpill' + (state.ans[idx] === -1 ? ' n' : ''), String(idx + 1)); b.type = 'button';
+        b.setAttribute('aria-label', 'Tinjau soal ' + (idx + 1));
+        b.addEventListener('click', function () { reviewing = true; cur = idx; show('quiz'); renderQuestion(); });
+        pr.appendChild(b);
+      })(j);
+    }
+    $('rTinjauNote').textContent = wrong ? 'Soal yang belum tepat. Ketuk nomor untuk membaca pembahasan lengkap.' : 'Semua soal terjawab tepat. Tidak ada yang perlu ditinjau.';
+    paintStatus();
+  }
+  $('btnBack').addEventListener('click', function () { reviewing = false; renderResult(); show('result'); });
+
+  var lastErr = null;
+  function paintStatus() {
+    var st = $('rStatus'); st.className = 'status';
+    var s = state.sent;
+    $('btnRetry').hidden = true;
+    if (s === 'ok') { st.classList.add('ok'); st.textContent = 'Nilai tersimpan di rekap pembuat soal.'; }
+    else if (s === 'wait') { st.textContent = 'Mengirim nilai ke rekap pembuat soal…'; }
+    else if (s === 'off') { st.textContent = 'Nilai belum dapat dikirim otomatis di tampilan ini. Unduh hasilmu lalu serahkan ke guru.'; }
+    else if (s === 'fail') {
+      st.classList.add('fail');
+      st.textContent = (lastErr && lastErr.code === 'invalid_argument')
+        ? 'Akun ini belum diberi izin menyimpan nilai. Minta guru memberi akses Kontributor, lalu kirim ulang.'
+        : 'Pengiriman gagal. Periksa koneksi, lalu kirim ulang.';
+      $('btnRetry').hidden = false;
+    } else { st.textContent = 'Nilai siap dikirim.'; $('btnRetry').hidden = false; }
+    $('btnSelfCsv').hidden = !env.dl;
+  }
+
+  async function submitScore() {
+    state.sent = 'wait'; paintStatus();
+    var db, uid;
+    try {
+      await env.ready; db = env.db; uid = env.uid;
+      if (!db || !uid) { state.sent = 'off'; saveState(); paintStatus(); $('btnSelfCsv').hidden = !env.dl; return; }
+      var t = tally(state);
+      var data = {
+        nama: state.nama, kelas: state.kelas, nilai: t.nilai, benar: t.benar, dijawab: t.dijawab, total: N,
+        percobaan: state.percobaan || 1, waktu: new Date().toISOString(), pola: t.pola
+      };
+      var ref = db.doc('hasil/' + uid);
+      try { await ref.set(data); }
+      catch (e) { if (e && e.code === 'unavailable') { await sleep(800 + Math.random() * 600); await ref.set(data); } else { throw e; } }
+      state.sent = 'ok'; lastErr = null; saveState(); paintStatus();
+    } catch (e) {
+      lastErr = e; state.sent = 'fail'; saveState(); paintStatus();
+    }
+  }
+  $('btnRetry').addEventListener('click', function () { submitScore(); });
+  $('btnAgain').addEventListener('click', function () { newAttempt(state.nama, state.kelas); });
+
+  /* ---------- CSV ---------- */
+  function csvCell(v) {
+    var s = String(v == null ? '' : v);
+    if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+    return '"' + s.replace(/"/g, '""') + '"';
+  }
+  function fmtDate(iso) {
+    try { return new Date(iso).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }); } catch (e) { return String(iso || ''); }
+  }
+  var HEAD = ['Nama', 'Kelas', 'Nilai', 'Benar', 'Dijawab', 'Jumlah soal', 'Percobaan', 'Dikumpulkan'];
+  function rowCells(r) { return [r.nama, r.kelas, r.nilai, r.benar, r.dijawab, r.total || N, r.percobaan || 1, fmtDate(r.waktu)]; }
+  function toCsv(list) {
+    var out = [HEAD.map(csvCell).join(',')];
+    list.forEach(function (r) { out.push(rowCells(r).map(csvCell).join(',')); });
+    return '﻿' + out.join('\r\n');
+  }
+  function toTsv(list) {
+    var clean = function (v) { return String(v == null ? '' : v).replace(/[\t\r\n]+/g, ' '); };
+    var out = [HEAD.join('\t')];
+    list.forEach(function (r) { out.push(rowCells(r).map(clean).join('\t')); });
+    return out.join('\n');
+  }
+  async function saveCsv(name, text, msgEl) {
+    try {
+      var dl = env.dl; if (!dl) { msgEl.textContent = 'Unduhan tidak tersedia di tampilan ini.'; return; }
+      await dl.save({ filename: name, data: text });
+      msgEl.textContent = 'Berkas disimpan.';
+    } catch (e) {
+      msgEl.textContent = (e && e.code === 'declined') ? 'Unduhan dibatalkan.' : 'Berkas tidak dapat disimpan di tampilan ini.';
+    }
+  }
+  $('btnSelfCsv').addEventListener('click', function () {
+    var t = tally(state);
+    var r = { nama: state.nama, kelas: state.kelas, nilai: t.nilai, benar: t.benar, dijawab: t.dijawab, total: N, percobaan: state.percobaan || 1, waktu: new Date(state.selesai || Date.now()).toISOString() };
+    var holder = $('rStatus');
+    var tmp = { textContent: '' };
+    saveCsv('hasil-kuis-genetik.csv', toCsv([r]), tmp).then(function () { if (tmp.textContent) { holder.className = 'status'; holder.textContent = tmp.textContent; } });
+  });
+
+  /* ---------- Rekap pembuat soal ---------- */
+  var rows = [], rekapUnsub = null, rekapTimer = null, shown = [];
+  $('btnRekap').addEventListener('click', openRekap);
+  $('btnRekapBack').addEventListener('click', function () { show('start'); });
+
+  async function openRekap() {
+    show('rekap');
+    await env.ready;
+    if (!env.db) { $('rkMsg').textContent = 'Rekap tidak tersedia di tampilan ini.'; return; }
+    if (rekapUnsub) return;
+    $('rkMsg').textContent = 'Memuat nilai…';
+    rekapTimer = setTimeout(function () { $('rkMsg').textContent = 'Data belum dapat dijangkau. Daftar di bawah mungkin belum terbaru.'; }, 10000);
+    rekapUnsub = env.db.collection('hasil').onSnapshot(function (snap) {
+      rows = snap.docs.map(function (d) { return Object.assign({}, d.data(), { id: d.id }); });
+      if (!snap.metadata.fromCache) clearTimeout(rekapTimer);
+      $('rkMsg').textContent = rows.length ? '' : 'Belum ada nilai yang masuk.';
+      renderRekap();
+    }, function (e) {
+      clearTimeout(rekapTimer); rekapUnsub = null;
+      $('rkMsg').textContent = 'Rekap tidak dapat dibuka dengan akun ini. Hanya pembuat soal dan editor yang dapat melihatnya.';
+    });
+  }
+
+  function renderRekap() {
+    var kSel = $('rkKelas'), keep = kSel.value;
+    var kelasList = Array.from(new Set(rows.map(function (r) { return String(r.kelas || ''); }))).filter(Boolean).sort(function (a, b) { return a.localeCompare(b, 'id'); });
+    kSel.textContent = '';
+    var o0 = el('option', '', 'Semua kelas'); o0.value = ''; kSel.appendChild(o0);
+    kelasList.forEach(function (k) { var o = el('option', '', k); o.value = k; kSel.appendChild(o); });
+    kSel.value = kelasList.indexOf(keep) > -1 ? keep : '';
+
+    var cari = $('rkCari').value.trim().toLowerCase();
+    var list = rows.filter(function (r) {
+      if (kSel.value && String(r.kelas) !== kSel.value) return false;
+      if (cari && String(r.nama || '').toLowerCase().indexOf(cari) === -1) return false;
+      return true;
+    });
+    var urut = $('rkUrut').value;
+    list.sort(function (a, b) {
+      if (urut === 'nilai') return (b.nilai || 0) - (a.nilai || 0) || String(a.nama).localeCompare(String(b.nama), 'id');
+      if (urut === 'waktu') return String(b.waktu || '').localeCompare(String(a.waktu || ''));
+      return String(a.kelas).localeCompare(String(b.kelas), 'id') || String(a.nama).localeCompare(String(b.nama), 'id');
+    });
+    shown = list;
+
+    var vals = list.map(function (r) { return Number(r.nilai) || 0; });
+    var st = $('rkStats'); st.textContent = '';
+    function stat(label, val) { var d = el('div'); d.appendChild(el('small', '', label)); d.appendChild(el('b', '', val)); st.appendChild(d); }
+    stat('Peserta', String(list.length));
+    stat('Rata-rata', vals.length ? (vals.reduce(function (a, b) { return a + b; }, 0) / vals.length).toFixed(1) : '—');
+    stat('Tertinggi', vals.length ? String(Math.max.apply(null, vals)) : '—');
+    stat('Terendah', vals.length ? String(Math.min.apply(null, vals)) : '—');
+
+    var tb = $('rkBody'); tb.textContent = '';
+    list.forEach(function (r, i) {
+      var tr = el('tr');
+      tr.appendChild(el('td', 'num', String(i + 1)));
+      tr.appendChild(el('td', '', String(r.nama || '')));
+      tr.appendChild(el('td', '', String(r.kelas || '')));
+      tr.appendChild(el('td', 'num mono', String(r.nilai == null ? '' : r.nilai)));
+      tr.appendChild(el('td', 'num mono', (r.benar == null ? '' : r.benar) + '/' + (r.total || N)));
+      tr.appendChild(el('td', 'num', String(r.percobaan || 1)));
+      tr.appendChild(el('td', '', fmtDate(r.waktu)));
+      var td = el('td');
+      if (env.isOwner) {
+        var b = el('button', 'link', 'Hapus'); b.type = 'button';
+        b.addEventListener('click', function () {
+          if (b.getAttribute('data-sure') !== '1') { b.setAttribute('data-sure', '1'); b.textContent = 'Yakin hapus?'; return; }
+          b.disabled = true; b.textContent = 'Menghapus…';
+          env.db.doc('hasil/' + r.id).delete().catch(function () { b.disabled = false; b.textContent = 'Gagal, coba lagi'; b.removeAttribute('data-sure'); });
+        });
+        td.appendChild(b);
+      }
+      tr.appendChild(td);
+      tb.appendChild(tr);
+    });
+
+    var cnt = new Array(N).fill(0), tot = 0;
+    list.forEach(function (r) {
+      if (typeof r.pola === 'string' && r.pola.length === N) { tot++; for (var i = 0; i < N; i++) if (r.pola[i] === '1') cnt[i]++; }
+    });
+    var box = $('rkHardBox'), hl = $('rkHard'); hl.textContent = '';
+    if (tot >= 2) {
+      var idx = cnt.map(function (c, i) { return i; }).sort(function (a, b) { return cnt[a] - cnt[b] || a - b; }).slice(0, 5);
+      idx.forEach(function (i) {
+        hl.appendChild(el('li', '', 'Soal ' + (i + 1) + ' · ' + BANK[i].t + ' · ' + Math.round(cnt[i] * 100 / tot) + '% benar'));
+      });
+      box.hidden = false;
+    } else { box.hidden = true; }
+  }
+  ['rkKelas', 'rkUrut'].forEach(function (id) { $(id).addEventListener('change', renderRekap); });
+  $('rkCari').addEventListener('input', renderRekap);
+  $('btnCsv').addEventListener('click', function () { saveCsv('rekap-nilai-kuis-genetik.csv', toCsv(shown), $('rkAct')); });
+  $('btnCopy').addEventListener('click', function () {
+    var text = toTsv(shown), msg = $('rkAct');
+    function fallback() {
+      var ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      var ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      msg.textContent = ok ? 'Tabel disalin. Tempel ke Sheets atau Excel.' : 'Tidak dapat menyalin. Gunakan Unduh CSV.';
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { msg.textContent = 'Tabel disalin. Tempel ke Sheets atau Excel.'; }, fallback);
+    } catch (e) { fallback(); }
+  });
+
+  /* ---------- Mulai halaman ---------- */
+  setupResume();
+  updateBar();
+})();
+</script>
+
+</body></html>
